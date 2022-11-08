@@ -1,0 +1,27 @@
+﻿@model IEnumerable<TableCatalogModel>
+
+<partial name="_Catalog" />
+
+@foreach (var item in Model)
+{
+    <div class="card" display="inline-block" style="width: 18rem;">
+        <img src=@item.ImageUrl class="card-img-top" alt="...">
+        <div class="card-body">
+            <h5 class="card-title">@item.Type</h5>
+            <p class="card-text">@item.Material</p>
+            <p class="card-text">@item.Price</p>
+            <form asp-action="Delete" asp-controller="Table" method="post">
+                <input name="id" type="hidden" value="@item.Id" />
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+
+            <form asp-action="Details" asp-controller="Table" method="post">
+                <button type="submit" class="btn btn-primary">Details</button>
+            </form>
+
+            <form asp-action="Delete" asp-controller="Table" method="post">
+                <button type="submit" class="btn btn-primary">Buy</button>
+            </form>
+        </div>
+    </div>
+}

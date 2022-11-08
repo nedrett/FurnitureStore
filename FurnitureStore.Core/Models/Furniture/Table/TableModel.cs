@@ -1,14 +1,13 @@
-﻿namespace FurnitureStore.Infrastructure.Data.Models
-{
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
-    using static Data.DataConstants.Table;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using static FurnitureStore.Infrastructure.Data.DataConstants.Table;
 
-    public class Table
+namespace FurnitureStore.Core.Models.Furniture.Table
+{
+    public class TableModel
     {
-        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -28,7 +27,7 @@
         public decimal Length { get; set; }
 
         [Required]
-        [Precision(18,2)]
+        [Precision(18, 2)]
         [Column(TypeName = "money")]
         public decimal Price { get; set; }
 
@@ -39,21 +38,9 @@
         [Required]
         [StringLength(DescriptionMaxLength, MinimumLength = DescriptionMinLength)]
         public string Description { get; set; } = null!;
-        
+
         [Required]
         [StringLength(ImageUrlMaxLength)]
         public string ImageUrl { get; set; } = null!;
-
-        [Required]
-        public string CreatorId { get; set; } = null!;
-
-        [Required]
-        [ForeignKey(nameof(CreatorId))]
-        public IdentityUser Creator { get; set; } = null!;
-
-        public string? BuyerId { get; set; }
-
-        [ForeignKey(nameof(BuyerId))]
-        public IdentityUser? Buyer { get; set; }
     }
 }

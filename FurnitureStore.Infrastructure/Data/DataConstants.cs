@@ -41,6 +41,11 @@
             public const int DescriptionMaxLength = 200;
 
             /// <summary>
+            /// Max ImageUrl length
+            /// </summary>
+            public const int ImageUrlMaxLength = 200;
+
+            /// <summary>
             /// Min Width value
             /// </summary>
             public const string WidthMinValue = "0.00";
@@ -92,7 +97,12 @@
             /// Max Description length
             /// </summary>
             public const int DescriptionMaxLength = 200;
-            
+
+            /// <summary>
+            /// Max ImageUrl length
+            /// </summary>
+            public const int ImageUrlMaxLength = 200;
+
             /// <summary>
             /// Min Quantity value
             /// </summary>

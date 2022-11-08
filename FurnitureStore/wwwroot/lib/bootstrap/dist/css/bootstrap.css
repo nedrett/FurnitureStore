@@ -4443,7 +4443,7 @@ textarea.form-control-lg {
 
 .card {
   position: relative;
-  display: flex;
+  display: inline-block;
   flex-direction: column;
   min-width: 0;
   word-wrap: break-word;
@@ -4561,7 +4561,7 @@ textarea.form-control-lg {
 }
 @media (min-width: 576px) {
   .card-group {
-    display: flex;
+    display: inline-block;
     flex-flow: row wrap;
   }
   .card-group > .card {

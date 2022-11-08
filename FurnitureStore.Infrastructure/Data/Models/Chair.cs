@@ -29,6 +29,10 @@
         public string Description { get; set; } = null!;
 
         [Required]
+        [StringLength(ImageUrlMaxLength)]
+        public string ImageUrl { get; set; } = null!;
+
+        [Required]
         public string CreatorId { get; set; } = null!;
 
         [Required]
