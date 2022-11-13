@@ -1,60 +1,60 @@
-﻿using FurnitureStore.Core.Models.Furniture.Table;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
+    using Core.Models.Furniture.Chair;
     using System.Security.Claims;
 
-    public class TableController : FurnitureController
+    public class ChairController : FurnitureController
     {
-        private readonly ITableService tableService;
+        private readonly IChairService chairService;
 
-        public TableController(ITableService _tableService)
+        public ChairController(IChairService _chairService)
         {
-            tableService = _tableService;
+            chairService = _chairService;
         }
 
         public async Task<IActionResult> All()
         {
-            var tableItems = await tableService.GetAll();
+            var chairItems = await chairService.GetAll();
 
-            return View("TableCatalog", tableItems);
+            return View("ChairCatalog", chairItems);
         }
 
         /// <summary>
-        /// Show Detailed View of Table Item
+        /// Show Detailed View of Chair Item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var model = new TableDetailsModel();
+            var model = new ChairDetailsModel();
 
             return View(model);
         }
 
         /// <summary>
-        /// Get Add Table Item View
+        /// Get Add Chair Item View
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IActionResult Add()
         {
-            var model = new TableModel();
+            var model = new ChairModel();
 
             return View(model);
         }
 
         /// <summary>
-        /// Adds Table item
+        /// Adds Chair item
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Add(TableModel model)
+        public async Task<IActionResult> Add(ChairModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -63,38 +63,38 @@ namespace FurnitureStore.Controllers.Furniture
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            await tableService.Add(model, userId);
+            await chairService.Add(model, userId);
 
             return RedirectToAction(nameof(All));
         }
 
         /// <summary>
-        /// Get Edit Table item
+        /// Get Edit Chair item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var model = new TableModel();
+            var model = new ChairModel();
 
             return View(model);
         }
 
         /// <summary>
-        /// Edits Table item
+        /// Edits Chair item
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, TableModel model)
+        public async Task<IActionResult> Edit(int id, ChairModel model)
         {
             return RedirectToAction(nameof(Details), new { id });
         }
 
         /// <summary>
-        /// User not owner buy Table item
+        /// User not owner buy Chair item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -107,9 +107,9 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            await tableService.Delete(id);
+            await chairService.Delete(id);
 
-            return RedirectToAction(nameof(All));
+            return RedirectToAction("All", "Chair");
         }
     }
 }
