@@ -16,6 +16,11 @@
             repo = _repo;
         }
 
+
+        /// <summary>
+        /// Gets All Chair Items from Database
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<ChairCatalogModel>> GetAll()
         {
             return await repo.AllReadonly<Chair>()
@@ -51,6 +56,12 @@
             await repo.SaveChangesAsync();
         }
 
+
+        /// <summary>
+        /// Set IsActive flag to false and removes item from the view
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task Delete(int id)
         {
             var chair = await repo.GetByIdAsync<Chair>(id);
@@ -58,6 +69,48 @@
             chair.IsActive = false;
 
             await repo.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Gets Chair Item for Details page
+        /// </summary>
+        /// <param name="chairId"></param>
+        /// <returns></returns>
+        public async Task<ChairDetailsModel> ChairDetailsById(int chairId)
+        {
+            return await repo.AllReadonly<Chair>()
+                .Where(c => c.IsActive)
+                .Where(c => c.Id == chairId)
+                .Select(c => new ChairDetailsModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    Price = c.Price,
+                    Quantity = c.Quantity,
+                    Description = c.Description,
+                    ImageUrl = c.ImageUrl
+                })
+                .FirstAsync();
+        }
+
+        public async Task Edit(int chairId, ChairModel model)
+        {
+            var chair = await repo.GetByIdAsync<Chair>(chairId);
+
+            chair.Name = model.Name;
+            chair.Price = model.Price;
+            chair.Quantity = model.Quantity;
+            chair.Description = model.Description;
+            chair.ImageUrl = model.ImageUrl;
+
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task<bool> Exists(int id)
+        {
+            return await repo.AllReadonly<Chair>()
+                .Where(c => c.IsActive)
+                .AnyAsync(c => c.Id == id);
         }
     }
 }

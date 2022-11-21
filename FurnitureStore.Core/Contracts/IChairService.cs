@@ -1,6 +1,4 @@
-﻿using FurnitureStore.Core.Models.Furniture.Table;
-
-namespace FurnitureStore.Core.Contracts
+﻿namespace FurnitureStore.Core.Contracts
 {
     using Models.Furniture.Chair;
 
@@ -16,5 +14,11 @@ namespace FurnitureStore.Core.Contracts
         Task Add(ChairModel chairModel, string userId);
 
         Task Delete(int id);
+
+        Task<ChairDetailsModel> ChairDetailsById(int chairId);
+
+        Task Edit(int chairId, ChairModel model);
+
+        Task<bool> Exists(int id);
     }
 }

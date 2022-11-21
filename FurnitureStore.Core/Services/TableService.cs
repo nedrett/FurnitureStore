@@ -17,6 +17,11 @@
             repo = _repo;
         }
 
+
+        /// <summary>
+        /// Gets All Table Items from Database
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<TableCatalogModel>> GetAll()
         {
             return await repo.AllReadonly<Table>()
@@ -55,6 +60,12 @@
             await repo.SaveChangesAsync();
         }
 
+
+        /// <summary>
+        /// Set IsActive flag to false and removes item from the view
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task Delete(int id)
         {
             var table = await repo.GetByIdAsync<Table>(id);

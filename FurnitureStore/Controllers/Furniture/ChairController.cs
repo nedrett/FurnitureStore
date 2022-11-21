@@ -16,6 +16,10 @@ namespace FurnitureStore.Controllers.Furniture
             chairService = _chairService;
         }
 
+        /// <summary>
+        /// Shows all Chair Items
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
@@ -32,9 +36,15 @@ namespace FurnitureStore.Controllers.Furniture
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var model = new ChairDetailsModel();
+            if (await chairService.Exists(id) == false)
+            {
+                return RedirectToAction(nameof(All));
 
-            return View(model);
+            }
+
+            var chairModel = await chairService.ChairDetailsById(id);
+
+            return View(chairModel);
         }
 
         /// <summary>
@@ -75,9 +85,25 @@ namespace FurnitureStore.Controllers.Furniture
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var model = new ChairModel();
+            if (await chairService.Exists(id) == false)
+            {
+                return RedirectToAction(nameof(All));
+
+            }
+
+            var chair = await chairService.ChairDetailsById(id);
+            
+            var model = new ChairModel
+            {
+                Id = chair.Id,
+                Name = chair.Name,
+                Price = chair.Price,
+                Quantity = chair.Quantity,
+                Description = chair.Description,
+                ImageUrl = chair.ImageUrl
+            };
 
             return View(model);
         }
@@ -91,7 +117,14 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Edit(int id, ChairModel model)
         {
-            return RedirectToAction(nameof(Details), new { id });
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await chairService.Edit(model.Id, model);
+
+            return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
         /// <summary>

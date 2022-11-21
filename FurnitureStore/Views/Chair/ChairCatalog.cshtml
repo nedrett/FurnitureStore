@@ -10,18 +10,17 @@
             <h5 class="card-title">@item.Name</h5>
             <p class="card-text">@item.Price</p>
             
-            <form asp-action="Details" asp-controller="Chair" method="post">
+            <form asp-action="Details" asp-controller="Chair" asp-route-id="@item.Id">
                 <button type="submit" class="btn btn-primary">Details</button>
             </form>
 
             @if (User.Identity.IsAuthenticated)
             {
-                <form asp-action="Delete" asp-controller="Chair" method="post">
-                    <input name="id" type="hidden" value="@item.Id" />
+                <form asp-action="Delete" asp-controller="Chair" asp-route-id="@item.Id">
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
 
-                <form asp-action="Delete" asp-controller="Chair" method="post">
+                <form asp-action="Delete" asp-controller="Chair" asp-route-id="@item.Id">
                     <button type="submit" class="btn btn-primary">Buy</button>
                 </form>
             }

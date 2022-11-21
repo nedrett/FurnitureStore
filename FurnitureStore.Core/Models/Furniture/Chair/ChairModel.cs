@@ -30,6 +30,7 @@ namespace FurnitureStore.Core.Models.Furniture.Chair
 
         [Required]
         [StringLength(ImageUrlMaxLength)]
+        [Display(Name = "Image Url")]
         public string ImageUrl { get; set; } = null!;
     }
 }

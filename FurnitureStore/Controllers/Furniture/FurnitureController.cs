@@ -7,6 +7,10 @@ namespace FurnitureStore.Controllers.Furniture
     [Authorize]
     public class FurnitureController : Controller
     {
+        /// <summary>
+        /// Shows All Items in Catalog
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Catalog()
@@ -14,6 +18,10 @@ namespace FurnitureStore.Controllers.Furniture
             return View();
         }
 
+        /// <summary>
+        /// Logged in users can create item
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public IActionResult Create() => View();
 
@@ -21,11 +29,6 @@ namespace FurnitureStore.Controllers.Furniture
         /// Shows created offers by the User
         /// </summary>
         /// <returns></returns>
-        public async Task<IActionResult> MyFurnitures()
-        {
-            //var model = new AllFurnituresModel();
-
-            return View();
-        }
+        public IActionResult MyFurnitures() => View();
     }
 }
