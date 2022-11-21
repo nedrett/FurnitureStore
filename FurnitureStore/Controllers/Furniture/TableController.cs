@@ -16,6 +16,7 @@ namespace FurnitureStore.Controllers.Furniture
             tableService = _tableService;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> All()
         {
             var tableItems = await tableService.GetAll();

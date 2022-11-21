@@ -2,14 +2,13 @@
 
 namespace FurnitureStore.Controllers.Furniture
 {
-    using FurnitureStore.Core.Contracts;
-    using FurnitureStore.Core.Services;
     using Microsoft.AspNetCore.Authorization;
 
     [Authorize]
     public class FurnitureController : Controller
     {
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult Catalog()
         {
             return View();

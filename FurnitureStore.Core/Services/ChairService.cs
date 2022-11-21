@@ -19,6 +19,7 @@
         public async Task<IEnumerable<ChairCatalogModel>> GetAll()
         {
             return await repo.AllReadonly<Chair>()
+                .Where(c => c.IsActive)
                 .Select(c => new ChairCatalogModel()
                 {
                     Id = c.Id,
@@ -52,15 +53,11 @@
 
         public async Task Delete(int id)
         {
-            var chair = await repo.All<Chair>()
-                .FirstOrDefaultAsync(c => c.Id == id);
+            var chair = await repo.GetByIdAsync<Chair>(id);
 
-            if (chair != null)
-            {
-                repo.Delete(chair);
+            chair.IsActive = false;
 
-                await repo.SaveChangesAsync();
-            }
+            await repo.SaveChangesAsync();
         }
     }
 }

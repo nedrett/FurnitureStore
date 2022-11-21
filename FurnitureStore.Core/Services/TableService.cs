@@ -20,6 +20,7 @@
         public async Task<IEnumerable<TableCatalogModel>> GetAll()
         {
             return await repo.AllReadonly<Table>()
+                .Where(t => t.IsActive)
                 .Select(t => new TableCatalogModel
                 {
                     Id = t.Id,
@@ -56,15 +57,11 @@
 
         public async Task Delete(int id)
         {
-            var table = await repo.All<Table>()
-                .FirstOrDefaultAsync(t => t.Id == id);
+            var table = await repo.GetByIdAsync<Table>(id);
 
-            if (table != null)
-            {
-                repo.Delete(table);
+            table.IsActive = false;
 
-                await repo.SaveChangesAsync();
-            }
+            await repo.SaveChangesAsync();
         }
     }
 }

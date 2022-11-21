@@ -10,18 +10,24 @@
             <h5 class="card-title">@item.Type</h5>
             <p class="card-text">@item.Material</p>
             <p class="card-text">@item.Price</p>
-            <form asp-action="Delete" asp-controller="Table" method="post">
-                <input name="id" type="hidden" value="@item.Id" />
-                <button type="submit" class="btn btn-danger">Delete</button>
-            </form>
 
-            <form asp-action="Details" asp-controller="Table" method="post">
-                <button type="submit" class="btn btn-primary">Details</button>
-            </form>
+            <div>
+                <form asp-action="Details" asp-controller="Table" method="post">
+                    <button type="submit" class="btn btn-primary">Details</button>
+                </form>
 
-            <form asp-action="Delete" asp-controller="Table" method="post">
-                <button type="submit" class="btn btn-primary">Buy</button>
-            </form>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <form asp-action="Delete" asp-controller="Table" method="post">
+                        <input name="id" type="hidden" value="@item.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+
+                    <form asp-action="Delete" asp-controller="Table" method="post">
+                        <button type="submit" class="btn btn-primary">Buy</button>
+                    </form>
+                }
+            </div>
         </div>
     </div>
 }

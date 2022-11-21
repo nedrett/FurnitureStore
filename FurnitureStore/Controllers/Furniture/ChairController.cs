@@ -16,6 +16,7 @@ namespace FurnitureStore.Controllers.Furniture
             chairService = _chairService;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> All()
         {
             var chairItems = await chairService.GetAll();
