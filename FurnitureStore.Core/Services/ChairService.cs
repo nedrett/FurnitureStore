@@ -106,11 +106,11 @@
             await repo.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(int id)
+        public async Task<bool> Exists(int chairId)
         {
             return await repo.AllReadonly<Chair>()
                 .Where(c => c.IsActive)
-                .AnyAsync(c => c.Id == id);
+                .AnyAsync(c => c.Id == chairId);
         }
     }
 }

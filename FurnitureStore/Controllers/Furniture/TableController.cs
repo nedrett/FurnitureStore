@@ -27,14 +27,19 @@ namespace FurnitureStore.Controllers.Furniture
         /// <summary>
         /// Show Detailed View of Table Item
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="tableId"></param>
         /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            var model = new TableDetailsModel();
+            if (await tableService.Exists(id) == false)
+            {
+                return RedirectToAction(nameof(All));
+            }
 
-            return View(model);
+            var tableModel = await tableService.TableDetailsById(id);
+
+            return View(tableModel);
         }
 
         /// <summary>
@@ -75,9 +80,28 @@ namespace FurnitureStore.Controllers.Furniture
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var model = new TableModel();
+            if (await tableService.Exists(id) == false)
+            {
+                return RedirectToAction(nameof(All));
+
+            }
+
+            var table = await tableService.TableDetailsById(id);
+
+            var model = new TableModel
+            {
+                Id = table.Id,
+                Type = table.Type,
+                Material = table.Material,
+                Width = table.Width,
+                Length = table.Length,
+                Price = table.Price,
+                Quantity = table.Quantity,
+                Description = table.Description,
+                ImageUrl = table.ImageUrl
+            };
 
             return View(model);
         }
@@ -91,7 +115,14 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Edit(int id, TableModel model)
         {
-            return RedirectToAction(nameof(Details), new { id });
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await tableService.Edit(model.Id, model);
+
+            return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
         /// <summary>

@@ -1,7 +1,7 @@
 ﻿@model ChairDetailsModel
 
 @{
-    ViewBag.Title = "Table Details";
+    ViewBag.Title = "Chair Details";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -29,6 +29,9 @@
                     <a class="ml-2 btn btn-danger" asp-controller="Chair" asp-action="Delete"
                    asp-route-id="@Model.Id">Delete</a>
                 }
+                <form asp-action="Delete" asp-controller="Chair" asp-route-id="@Model.Id">
+                    <button type="submit" class="btn btn-primary">Buy</button>
+                </form>
             </div>
         </div>
     </div>

@@ -14,5 +14,11 @@ namespace FurnitureStore.Core.Contracts
         Task Add(TableModel tableModel, string userId);
 
         Task Delete(int id);
+
+        Task<TableDetailsModel> TableDetailsById(int tableId);
+
+        Task Edit(int tableId, TableModel model);
+
+        Task<bool> Exists(int tableId);
     }
 }

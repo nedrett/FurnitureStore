@@ -19,6 +19,6 @@
 
         Task Edit(int chairId, ChairModel model);
 
-        Task<bool> Exists(int id);
+        Task<bool> Exists(int chairId);
     }
 }

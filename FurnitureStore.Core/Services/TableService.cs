@@ -5,7 +5,6 @@
     using Infrastructure.Data.Models;
     using Microsoft.EntityFrameworkCore;
     using Models.Furniture.Table;
-    using System.Security.Claims;
 
 
     public class TableService : ITableService
@@ -73,6 +72,49 @@
             table.IsActive = false;
 
             await repo.SaveChangesAsync();
+        }
+
+        public async Task<TableDetailsModel> TableDetailsById(int tableId)
+        {
+            return await repo.AllReadonly<Table>()
+                .Where(c => c.IsActive)
+                .Where(c => c.Id == tableId)
+                .Select(c => new TableDetailsModel
+                {
+                    Id = c.Id,
+                    Type = c.Type,
+                    Material = c.Material,
+                    Width = c.Width,
+                    Length = c.Length,
+                    Price = c.Price,
+                    Quantity = c.Quantity,
+                    Description = c.Description,
+                    ImageUrl = c.ImageUrl
+                })
+                .FirstAsync();
+        }
+
+        public async Task Edit(int tableId, TableModel model)
+        {
+            var table = await repo.GetByIdAsync<Table>(tableId);
+            
+            table.Type = model.Type;
+            table.Width = model.Width;
+            table.Length = model.Length;
+            table.Price = model.Price;
+            table.Quantity = model.Quantity;
+            table.Description = model.Description;
+            table.ImageUrl = model.ImageUrl;
+            table.Material = model.Material;
+
+            await repo.SaveChangesAsync();
+        }
+
+        public async Task<bool> Exists(int tableId)
+        {
+            return await repo.AllReadonly<Table>()
+                .Where(c => c.IsActive)
+                .AnyAsync(c => c.Id == tableId);
         }
     }
 }
