@@ -12,6 +12,7 @@ namespace FurnitureStore.Extensions
             services.AddScoped<IRepository, Repository>();
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IChairService, ChairService>();
+            services.AddScoped<ISofaService, SofaService>();
 
             return services;
         }

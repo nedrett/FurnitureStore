@@ -1,71 +1,70 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using FurnitureStore.Core.Models.Furniture.Table;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
-    using Core.Models.Furniture.Chair;
     using System.Security.Claims;
 
-    public class ChairController : FurnitureController
+    public class SofaController : FurnitureController
     {
-        private readonly IChairService chairService;
+        private readonly ISofaService sofaService;
 
-        public ChairController(IChairService _chairService)
+        public SofaController(ISofaService _sofaService)
         {
-            chairService = _chairService;
+            sofaService = _sofaService;
         }
 
         /// <summary>
-        /// Shows all Chair Items
+        /// Shows all Sofa Items
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var chairItems = await chairService.GetAll();
+            var sofaItems = await sofaService.GetAll();
 
-            return View("ChairCatalog", chairItems);
+            return View("SofaCatalog", sofaItems);
         }
 
         /// <summary>
-        /// Show Detailed View of Chair Item
+        /// Show Detailed View of Sofa Item
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="tableId"></param>
         /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            if (await chairService.Exists(id) == false)
+            if (await sofaService.Exists(id) == false)
             {
                 return RedirectToAction(nameof(All));
-
             }
 
-            var chairModel = await chairService.ChairDetailsById(id);
+            var sofaModel = await sofaService.SofaDetailsById(id);
 
-            return View(chairModel);
+            return View(sofaModel);
         }
 
         /// <summary>
-        /// Get Add Chair Item View
+        /// Get Add Sofa Item View
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IActionResult Add()
         {
-            var model = new ChairModel();
+            var model = new SofaModel();
 
             return View(model);
         }
 
         /// <summary>
-        /// Adds Chair item
+        /// Adds Sofa item
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Add(ChairModel model)
+        public async Task<IActionResult> Add(SofaModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -74,61 +73,65 @@ namespace FurnitureStore.Controllers.Furniture
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            await chairService.Add(model, userId);
+            await sofaService.Add(model, userId);
 
             return RedirectToAction(nameof(All));
         }
 
         /// <summary>
-        /// Get Edit Chair item
+        /// Get Edit Sofa item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            if (await chairService.Exists(id) == false)
+            if (await sofaService.Exists(id) == false)
             {
                 return RedirectToAction(nameof(All));
 
             }
 
-            var chair = await chairService.ChairDetailsById(id);
-            
-            var model = new ChairModel
+            var sofa = await sofaService.SofaDetailsById(id);
+
+            var model = new SofaModel
             {
-                Id = chair.Id,
-                Name = chair.Name,
-                Price = chair.Price,
-                Quantity = chair.Quantity,
-                Description = chair.Description,
-                ImageUrl = chair.ImageUrl
+                Id = sofa.Id,
+                Name = sofa.Name,
+                UpholsteryType = sofa.UpholsteryType,
+                Width = sofa.Width,
+                Length = sofa.Length,
+                Height = sofa.Height,
+                Price = sofa.Price,
+                Quantity = sofa.Quantity,
+                Description = sofa.Description,
+                ImageUrl = sofa.ImageUrl
             };
 
             return View(model);
         }
 
         /// <summary>
-        /// Edits Chair item
+        /// Edits Sofa item
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, ChairModel model)
+        public async Task<IActionResult> Edit(int id, SofaModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            await chairService.Edit(model.Id, model);
+            await sofaService.Edit(model.Id, model);
 
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
         /// <summary>
-        /// User not owner buy Chair item
+        /// User not owner buy Sofa item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -143,12 +146,11 @@ namespace FurnitureStore.Controllers.Furniture
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            await chairService.Delete(id);
+            await sofaService.Delete(id);
 
-            return RedirectToAction("All", "Chair");
+            return RedirectToAction(nameof(All));
         }
     }
 }

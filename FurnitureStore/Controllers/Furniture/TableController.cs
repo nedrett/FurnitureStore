@@ -16,6 +16,10 @@ namespace FurnitureStore.Controllers.Furniture
             tableService = _tableService;
         }
 
+        /// <summary>
+        /// Shows all Table Items
+        /// </summary>
+        /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
@@ -136,6 +140,11 @@ namespace FurnitureStore.Controllers.Furniture
             return RedirectToAction(nameof(All));
         }
 
+        /// <summary>
+        /// Changes IsActive flag to false
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {

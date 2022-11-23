@@ -15,5 +15,7 @@ namespace FurnitureStore.Infrastructure.Data
         public DbSet<Table> Tables { get; set; }
 
         public DbSet<Chair> Chairs { get; set; }
+
+        public DbSet<Sofa> Sofas { get; set; }
     }
 }

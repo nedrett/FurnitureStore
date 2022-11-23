@@ -1,7 +1,7 @@
-﻿@model TableDetailsModel
+﻿@model SofaDetailsModel
 
 @{
-    ViewBag.Title = "Table Details";
+    ViewBag.Title = "Sofa Details";
 }
 
 <h2 class="text-center">@ViewBag.Title</h2>
@@ -14,12 +14,13 @@
                  src="@Model.ImageUrl" alt="House Image">
         </div>
         <div class="card col-8 border-0">
-            <p style="font-size:25px;"><u>@Model.Type</u></p>
-            <p>Material: <b>@Model.Material</b></p>
+            <p style="font-size:25px;"><u>@Model.Name</u></p>
+            <p>Material: <b>@Model.UpholsteryType</b></p>
             <p>
                 Size:
             <p><b>Length:@Model.Length m</b></p>
-            <b>Width:@Model.Width m</b>
+            <p><b>Width:@Model.Width m</b></p>
+            <p><b>Height:@Model.Height m</b></p>
             </p>
             <p>
                 Price:
@@ -30,12 +31,12 @@
             <div class="form-inline">
                 @if (this.User.Identity.IsAuthenticated)
                 {
-                    <a class="btn btn-warning" asp-controller="Table" asp-action="Edit"
+                    <a class="btn btn-warning" asp-controller="Sofa" asp-action="Edit"
                    asp-route-id="@Model.Id">Edit</a>
-                    <a class="ml-2 btn btn-danger" asp-controller="Table" asp-action="Delete"
+                    <a class="ml-2 btn btn-danger" asp-controller="Sofa" asp-action="Delete"
                    asp-route-id="@Model.Id">Delete</a>
                 }
-                <form asp-action="Delete" asp-controller="Table" asp-route-id="@Model.Id">
+                <form asp-action="Delete" asp-controller="Sofa" asp-route-id="@Model.Id">
                     <button type="submit" class="btn btn-primary">Buy</button>
                 </form>
             </div>
