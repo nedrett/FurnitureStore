@@ -35,7 +35,7 @@
         }
 
         /// <summary>
-        /// Add new Table item
+        /// Add new Chair item
         /// </summary>
         /// <param name="chairModel"></param>
         /// <returns></returns>

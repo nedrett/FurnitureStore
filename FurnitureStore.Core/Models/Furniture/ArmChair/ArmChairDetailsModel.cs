@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace FurnitureStore.Core.Models.Furniture.Sofa
+﻿namespace FurnitureStore.Core.Models.Furniture.ArmChair
 {
-    public class SofaDetailsModel
+    using System.ComponentModel.DataAnnotations;
+
+    public class ArmChairDetailsModel
     {
         public int Id { get; set; }
         
@@ -10,9 +10,9 @@ namespace FurnitureStore.Core.Models.Furniture.Sofa
 
         [Display(Name = "Upholstery Type")]
         public string UpholsteryType { get; set; } = null!;
-        
+
         public decimal Width { get; set; }
-        
+
         public decimal Length { get; set; }
 
         public decimal Height { get; set; }
@@ -20,9 +20,9 @@ namespace FurnitureStore.Core.Models.Furniture.Sofa
         public decimal Price { get; set; }
         
         public int Quantity { get; set; }
-        
+
         public string Description { get; set; } = null!;
-        
+
         [Display(Name = "Image Url")]
         public string ImageUrl { get; set; } = null!;
     }

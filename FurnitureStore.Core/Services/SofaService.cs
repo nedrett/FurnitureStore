@@ -4,7 +4,7 @@
     using Infrastructure.Data.Common;
     using Infrastructure.Data.Models;
     using Microsoft.EntityFrameworkCore;
-    using Models.Furniture.Table;
+    using Models.Furniture.Sofa;
 
 
     public class SofaService : ISofaService

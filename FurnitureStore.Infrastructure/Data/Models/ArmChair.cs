@@ -1,13 +1,14 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using static FurnitureStore.Infrastructure.Data.DataConstants.Sofa;
-
-namespace FurnitureStore.Core.Models.Furniture.Sofa
+﻿namespace FurnitureStore.Infrastructure.Data.Models
 {
-    public class SofaModel
+    using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+    using static Data.DataConstants.ArmChair;
+
+    public class ArmChair
     {
+        [Key]
         public int Id { get; set; }
 
         [Required]
@@ -16,8 +17,6 @@ namespace FurnitureStore.Core.Models.Furniture.Sofa
 
         [Required]
         [StringLength(UpholsteryTypeMaxLength, MinimumLength = UpholsteryTypeMinLength)]
-        [Display(Name = "Upholstery Type")]
-
         public string UpholsteryType { get; set; } = null!;
 
         [Required]
@@ -47,7 +46,20 @@ namespace FurnitureStore.Core.Models.Furniture.Sofa
 
         [Required]
         [StringLength(ImageUrlMaxLength)]
-        [Display(Name = "Image Url")]
         public string ImageUrl { get; set; } = null!;
+
+        [Required]
+        public string CreatorId { get; set; } = null!;
+
+        [Required]
+        [ForeignKey(nameof(CreatorId))]
+        public IdentityUser Creator { get; set; } = null!;
+
+        public string? BuyerId { get; set; }
+
+        [ForeignKey(nameof(BuyerId))]
+        public IdentityUser? Buyer { get; set; }
+
+        public bool IsActive { get; set; } = true;
     }
 }

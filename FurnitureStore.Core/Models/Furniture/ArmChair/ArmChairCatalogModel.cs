@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FurnitureStore.Core.Models.Furniture.Sofa
+namespace FurnitureStore.Core.Models.Furniture.ArmChair
 {
-    public class SofaCatalogModel
+    public class ArmChairCatalogModel
     {
         public int Id { get; set; }
 
@@ -10,7 +10,7 @@ namespace FurnitureStore.Core.Models.Furniture.Sofa
 
         [Display(Name = "Upholstery Type")]
         public string UpholsteryType { get; set; } = null!;
-        
+
         public decimal Price { get; set; }
 
         [Display(Name = "Image Url")]

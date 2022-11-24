@@ -26,8 +26,10 @@
                 {
                     <a class="btn btn-warning" asp-controller="Chair" asp-action="Edit"
                    asp-route-id="@Model.Id">Edit</a>
-                    <a class="ml-2 btn btn-danger" asp-controller="Chair" asp-action="Delete"
-                   asp-route-id="@Model.Id">Delete</a>
+                    <form asp-action="Delete" asp-controller="Chair" asp-route-id="@Model.Id">
+                        <input name="id" type="hidden" value="@Model.Id" />
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
                 }
                 <form asp-action="Delete" asp-controller="Chair" asp-route-id="@Model.Id">
                     <button type="submit" class="btn btn-primary">Buy</button>

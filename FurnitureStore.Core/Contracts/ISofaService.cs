@@ -1,7 +1,7 @@
-﻿using FurnitureStore.Core.Models.Furniture.Table;
-
-namespace FurnitureStore.Core.Contracts
+﻿namespace FurnitureStore.Core.Contracts
 {
+    using Models.Furniture.Sofa;
+
     public interface ISofaService
     {
         Task<IEnumerable<SofaCatalogModel>> GetAll();

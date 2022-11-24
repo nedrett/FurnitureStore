@@ -2,11 +2,12 @@
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static FurnitureStore.Infrastructure.Data.DataConstants.Sofa;
+using static FurnitureStore.Infrastructure.Data.DataConstants.ArmChair;
 
-namespace FurnitureStore.Core.Models.Furniture.Sofa
+
+namespace FurnitureStore.Core.Models.Furniture.ArmChair
 {
-    public class SofaModel
+    public class ArmChairModel
     {
         public int Id { get; set; }
 

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ChairCatalogModel>
+﻿@model IEnumerable<ArmChairCatalogModel>
 
 <partial name="_Catalog" />
 
@@ -8,20 +8,21 @@
         <img src=@item.ImageUrl class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">@item.Name</h5>
+            <p class="card-text">@item.UpholsteryType</p>
             <p class="card-text">@item.Price</p>
-            
-            <form asp-action="Details" asp-controller="Chair" asp-route-id="@item.Id">
+
+            <form asp-action="Details" asp-controller="ArmChair" asp-route-id="@item.Id">
                 <button type="submit" class="btn btn-primary">Details</button>
             </form>
 
             @if (User.Identity.IsAuthenticated)
             {
-                <form asp-action="Delete" asp-controller="Chair" asp-route-id="@item.Id">
+                <form asp-action="Delete" asp-controller="ArmChair" asp-route-id="@item.Id">
                     <input name="id" type="hidden" value="@item.Id" />
                     <button type="submit" class="btn btn-danger">Delete</button>
                 </form>
 
-                <form asp-action="Delete" asp-controller="Chair" asp-route-id="@item.Id">
+                <form asp-action="Delete" asp-controller="ArmChair" asp-route-id="@item.Id">
                     <button type="submit" class="btn btn-primary">Buy</button>
                 </form>
             }
