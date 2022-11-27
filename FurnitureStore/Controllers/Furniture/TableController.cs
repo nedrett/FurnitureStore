@@ -43,6 +43,8 @@ namespace FurnitureStore.Controllers.Furniture
                 }
             }
 
+            TempData[MessageConstant.SuccessMessage] = "All Available Tables";
+
             return View("TableCatalog", tableItems);
         }
 

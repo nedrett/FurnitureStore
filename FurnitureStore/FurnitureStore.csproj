@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <None Include="appsettings.Production.json" />
+    <None Include="wwwroot\Images\chair.jpg" />
   </ItemGroup>
 
   <ItemGroup>

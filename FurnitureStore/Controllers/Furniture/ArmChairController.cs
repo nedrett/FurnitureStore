@@ -43,6 +43,8 @@ namespace FurnitureStore.Controllers.Furniture
                 }
             }
 
+            TempData[MessageConstant.SuccessMessage] = "All Available Armchairs";
+
             return View("ArmChairCatalog", armChairItems);
         }
 

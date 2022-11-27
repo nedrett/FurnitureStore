@@ -13,10 +13,7 @@ namespace FurnitureStore.Controllers.Furniture
         /// <returns></returns>
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Catalog()
-        {
-            return View();
-        }
+        public IActionResult Catalog() => View();
 
         /// <summary>
         /// Logged in users can create item
