@@ -24,14 +24,15 @@
         public async Task<IEnumerable<SofaCatalogModel>> GetAll()
         {
             return await repo.AllReadonly<Sofa>()
-                .Where(t => t.IsActive)
-                .Select(t => new SofaCatalogModel
+                .Where(s => s.IsActive)
+                .Select(s => new SofaCatalogModel
                 {
-                    Id = t.Id,
-                    Name = t.Name,
-                    UpholsteryType = t.UpholsteryType,
-                    Price = t.Price,
-                    ImageUrl = t.ImageUrl
+                    Id = s.Id,
+                    Name = s.Name,
+                    UpholsteryType = s.UpholsteryType,
+                    Price = s.Price,
+                    ImageUrl = s.ImageUrl,
+                    CreatorId = s.CreatorId
                 }).ToListAsync();
         }
 
@@ -78,20 +79,21 @@
         public async Task<SofaDetailsModel> SofaDetailsById(int sofaId)
         {
             return await repo.AllReadonly<Sofa>()
-                .Where(c => c.IsActive)
-                .Where(c => c.Id == sofaId)
-                .Select(c => new SofaDetailsModel
+                .Where(s => s.IsActive)
+                .Where(s => s.Id == sofaId)
+                .Select(s => new SofaDetailsModel
                 {
-                    Id = c.Id,
-                    Name = c.Name,
-                    UpholsteryType = c.UpholsteryType,
-                    Width = c.Width,
-                    Length = c.Length,
-                    Height = c.Height,
-                    Price = c.Price,
-                    Quantity = c.Quantity,
-                    Description = c.Description,
-                    ImageUrl = c.ImageUrl
+                    Id = s.Id,
+                    Name = s.Name,
+                    UpholsteryType = s.UpholsteryType,
+                    Width = s.Width,
+                    Length = s.Length,
+                    Height = s.Height,
+                    Price = s.Price,
+                    Quantity = s.Quantity,
+                    Description = s.Description,
+                    ImageUrl = s.ImageUrl,
+                    CreatorId = s.CreatorId
                 })
                 .FirstAsync();
         }
@@ -113,11 +115,11 @@
             await repo.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(int tableId)
+        public async Task<bool> Exists(int sofaId)
         {
             return await repo.AllReadonly<Sofa>()
-                .Where(c => c.IsActive)
-                .AnyAsync(c => c.Id == tableId);
+                .Where(s => s.IsActive)
+                .AnyAsync(s => s.Id == sofaId);
         }
     }
 }

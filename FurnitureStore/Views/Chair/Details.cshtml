@@ -24,16 +24,22 @@
             <div class="form-inline">
                 @if (this.User.Identity.IsAuthenticated)
                 {
-                    <a class="btn btn-warning" asp-controller="Chair" asp-action="Edit"
-                   asp-route-id="@Model.Id">Edit</a>
-                    <form asp-action="Delete" asp-controller="Chair" asp-route-id="@Model.Id">
-                        <input name="id" type="hidden" value="@Model.Id" />
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                    @if (Model.IsCreator)
+                    {
+                        <a class="btn btn-warning" asp-controller="Chair" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                        <form asp-action="Delete" asp-controller="Chair" asp-route-id="@Model.Id">
+                            <input name="id" type="hidden" value="@Model.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="Buy" asp-controller="Chair" asp-route-id="@Model.Id">
+                            <button type="submit" class="btn btn-primary">Buy</button>
+                        </form>
+                    }
                 }
-                <form asp-action="Delete" asp-controller="Chair" asp-route-id="@Model.Id">
-                    <button type="submit" class="btn btn-primary">Buy</button>
-                </form>
+
             </div>
         </div>
     </div>

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
+    using HouseRentingSystem.Core.Constants;
     using System.Security.Claims;
 
     public class TableController : FurnitureController
@@ -25,6 +26,23 @@ namespace FurnitureStore.Controllers.Furniture
         {
             var tableItems = await tableService.GetAll();
 
+            if (tableItems == null || tableItems.Count() == 0)
+            {
+                TempData[MessageConstant.ErrorMessage] = "No Tables are Available";
+
+                return RedirectToAction("Catalog", "Furniture");
+            }
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            foreach (var table in tableItems)
+            {
+                if (table.CreatorId == userId)
+                {
+                    table.IsCreator = true;
+                }
+            }
+
             return View("TableCatalog", tableItems);
         }
 
@@ -38,10 +56,19 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (await tableService.Exists(id) == false)
             {
+                TempData[MessageConstant.ErrorMessage] = "Table not Available";
+
                 return RedirectToAction(nameof(All));
             }
 
             var tableModel = await tableService.TableDetailsById(id);
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (tableModel.CreatorId == userId)
+            {
+                tableModel.IsCreator = true;
+            }
 
             return View(tableModel);
         }
@@ -68,12 +95,16 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (!ModelState.IsValid)
             {
+                TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
+
                 return View(model);
             }
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             await tableService.Add(model, userId);
+
+            TempData[MessageConstant.SuccessMessage] = "Successfully added Table";
 
             return RedirectToAction(nameof(All));
         }
@@ -88,6 +119,8 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (await tableService.Exists(id) == false)
             {
+                TempData[MessageConstant.ErrorMessage] = "Table not Available";
+
                 return RedirectToAction(nameof(All));
 
             }
@@ -121,11 +154,15 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (!ModelState.IsValid)
             {
+                TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
+
                 return View(model);
             }
 
             await tableService.Edit(model.Id, model);
 
+            TempData[MessageConstant.SuccessMessage] = "Successfully edited Table";
+            
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
@@ -150,6 +187,8 @@ namespace FurnitureStore.Controllers.Furniture
         {
             await tableService.Delete(id);
 
+            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Table";
+            
             return RedirectToAction(nameof(All));
         }
     }

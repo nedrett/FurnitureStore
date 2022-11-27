@@ -17,5 +17,7 @@ namespace FurnitureStore.Core.Models.Furniture.ArmChair
         public string ImageUrl { get; set; } = null!;
 
         public string CreatorId { get; set; } = null!;
+
+        public bool IsCreator { get; set; }
     }
 }

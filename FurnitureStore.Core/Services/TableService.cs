@@ -31,7 +31,8 @@
                     Type = t.Type,
                     Material = t.Material,
                     Price = t.Price,
-                    ImageUrl = t.ImageUrl
+                    ImageUrl = t.ImageUrl,
+                    CreatorId = t.CreatorId
                 }).ToListAsync();
         }
 
@@ -77,19 +78,20 @@
         public async Task<TableDetailsModel> TableDetailsById(int tableId)
         {
             return await repo.AllReadonly<Table>()
-                .Where(c => c.IsActive)
-                .Where(c => c.Id == tableId)
-                .Select(c => new TableDetailsModel
+                .Where(t => t.IsActive)
+                .Where(t => t.Id == tableId)
+                .Select(t => new TableDetailsModel
                 {
-                    Id = c.Id,
-                    Type = c.Type,
-                    Material = c.Material,
-                    Width = c.Width,
-                    Length = c.Length,
-                    Price = c.Price,
-                    Quantity = c.Quantity,
-                    Description = c.Description,
-                    ImageUrl = c.ImageUrl
+                    Id = t.Id,
+                    Type = t.Type,
+                    Material = t.Material,
+                    Width = t.Width,
+                    Length = t.Length,
+                    Price = t.Price,
+                    Quantity = t.Quantity,
+                    Description = t.Description,
+                    ImageUrl = t.ImageUrl,
+                    CreatorId = t.CreatorId
                 })
                 .FirstAsync();
         }
@@ -113,8 +115,8 @@
         public async Task<bool> Exists(int tableId)
         {
             return await repo.AllReadonly<Table>()
-                .Where(c => c.IsActive)
-                .AnyAsync(c => c.Id == tableId);
+                .Where(t => t.IsActive)
+                .AnyAsync(t => t.Id == tableId);
         }
     }
 }

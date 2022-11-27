@@ -4,8 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
-    using System.Security.Claims;
     using Core.Models.Furniture.ArmChair;
+    using HouseRentingSystem.Core.Constants;
+    using System.Security.Claims;
 
     public class ArmChairController : FurnitureController
     {
@@ -25,6 +26,23 @@ namespace FurnitureStore.Controllers.Furniture
         {
             var armChairItems = await armChairService.GetAll();
 
+            if (armChairItems == null || armChairItems.Count() == 0)
+            {
+                TempData[MessageConstant.ErrorMessage] = "No Armchairs are Available";
+
+                return RedirectToAction("Catalog", "Furniture");
+            }
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            foreach (var armChair in armChairItems)
+            {
+                if (armChair.CreatorId == userId)
+                {
+                    armChair.IsCreator = true;
+                }
+            }
+
             return View("ArmChairCatalog", armChairItems);
         }
 
@@ -38,11 +56,20 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (await armChairService.Exists(id) == false)
             {
+                TempData[MessageConstant.ErrorMessage] = "Armchair not Available";
+
                 return RedirectToAction(nameof(All));
 
             }
 
             var armChairModel = await armChairService.ArmChairDetailsById(id);
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (armChairModel.CreatorId == userId)
+            {
+                armChairModel.IsCreator = true;
+            }
 
             return View(armChairModel);
         }
@@ -69,12 +96,16 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (!ModelState.IsValid)
             {
+                TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
+
                 return View(model);
             }
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             await armChairService.Add(model, userId);
+
+            TempData[MessageConstant.SuccessMessage] = "Successfully added Armchair";
 
             return RedirectToAction(nameof(All));
         }
@@ -89,12 +120,13 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (await armChairService.Exists(id) == false)
             {
-                return RedirectToAction(nameof(All));
+                TempData[MessageConstant.ErrorMessage] = "Armchair not Available";
 
+                return RedirectToAction(nameof(All));
             }
 
             var armChair = await armChairService.ArmChairDetailsById(id);
-            
+
             var model = new ArmChairModel
             {
                 Id = armChair.Id,
@@ -123,10 +155,14 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (!ModelState.IsValid)
             {
+                TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
+
                 return View(model);
             }
 
             await armChairService.Edit(model.Id, model);
+
+            TempData[MessageConstant.SuccessMessage] = "Successfully edited Armchair";
 
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
@@ -151,6 +187,8 @@ namespace FurnitureStore.Controllers.Furniture
         public async Task<IActionResult> Delete([FromForm] int id)
         {
             await armChairService.Delete(id);
+
+            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Armchair";
 
             return RedirectToAction("All", "ArmChair");
         }

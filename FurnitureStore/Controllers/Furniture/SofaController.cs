@@ -6,6 +6,7 @@ namespace FurnitureStore.Controllers.Furniture
     using Core.Contracts;
     using Core.Models.Furniture.Sofa;
     using System.Security.Claims;
+    using HouseRentingSystem.Core.Constants;
 
     public class SofaController : FurnitureController
     {
@@ -25,23 +26,53 @@ namespace FurnitureStore.Controllers.Furniture
         {
             var sofaItems = await sofaService.GetAll();
 
+            if (sofaItems == null || sofaItems.Count() == 0)
+            {
+                TempData[MessageConstant.ErrorMessage] = "No Sofas are Available";
+
+                return RedirectToAction("Catalog", "Furniture");
+            }
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            foreach (var sofa in sofaItems)
+            {
+                if (sofa.CreatorId == userId)
+                {
+                    sofa.IsCreator = true;
+                }
+            }
+
+            TempData[MessageConstant.SuccessMessage] = "All Available Sofas";
+
+
             return View("SofaCatalog", sofaItems);
         }
 
         /// <summary>
         /// Show Detailed View of Sofa Item
         /// </summary>
-        /// <param name="tableId"></param>
+        /// <param name="id"></param>
         /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
             if (await sofaService.Exists(id) == false)
             {
+                TempData[MessageConstant.ErrorMessage] = "Sofa not Available";
+
+
                 return RedirectToAction(nameof(All));
             }
 
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
             var sofaModel = await sofaService.SofaDetailsById(id);
+
+            if (sofaModel.CreatorId == userId)
+            {
+                sofaModel.IsCreator = true;
+            }
 
             return View(sofaModel);
         }
@@ -68,12 +99,16 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (!ModelState.IsValid)
             {
+                TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
+                
                 return View(model);
             }
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             await sofaService.Add(model, userId);
+
+            TempData[MessageConstant.SuccessMessage] = "Successfully added Sofa";
 
             return RedirectToAction(nameof(All));
         }
@@ -88,6 +123,8 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (await sofaService.Exists(id) == false)
             {
+                TempData[MessageConstant.ErrorMessage] = "Sofa not Available";
+                
                 return RedirectToAction(nameof(All));
 
             }
@@ -122,11 +159,15 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (!ModelState.IsValid)
             {
+                TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
+
                 return View(model);
             }
 
             await sofaService.Edit(model.Id, model);
 
+            TempData[MessageConstant.SuccessMessage] = "Successfully edited Sofa";
+            
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
@@ -150,6 +191,8 @@ namespace FurnitureStore.Controllers.Furniture
         {
             await sofaService.Delete(id);
 
+            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Sofa";
+            
             return RedirectToAction(nameof(All));
         }
     }

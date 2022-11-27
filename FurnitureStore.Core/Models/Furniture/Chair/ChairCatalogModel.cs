@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
 
 namespace FurnitureStore.Core.Models.Furniture.Chair
 {
@@ -13,5 +12,9 @@ namespace FurnitureStore.Core.Models.Furniture.Chair
 
         [Display(Name = "Image Url")]
         public string ImageUrl { get; set; } = null!;
+
+        public string CreatorId { get; set; } = null!;
+        
+        public bool IsCreator { get; set; }
     }
 }

@@ -27,4 +27,8 @@
     <ProjectReference Include="..\FurnitureStore.Core\FurnitureStore.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\lib\toastr\" />
+  </ItemGroup>
+
 </Project>

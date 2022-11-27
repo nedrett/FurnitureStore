@@ -31,7 +31,8 @@
                     Name = ac.Name,
                     UpholsteryType = ac.UpholsteryType,
                     Price = ac.Price,
-                    ImageUrl = ac.ImageUrl
+                    ImageUrl = ac.ImageUrl,
+                    CreatorId = ac.CreatorId
                 }).ToListAsync();
         }
 
@@ -97,7 +98,8 @@
                     Price = ac.Price,
                     Quantity = ac.Quantity,
                     Description = ac.Description,
-                    ImageUrl = ac.ImageUrl
+                    ImageUrl = ac.ImageUrl,
+                    CreatorId = ac.CreatorId
                 })
                 .FirstAsync();
         }
@@ -119,11 +121,11 @@
             await repo.SaveChangesAsync();
         }
 
-        public async Task<bool> Exists(int armChairId)
+        public async Task<bool> Exists(int id)
         {
-            return await repo.AllReadonly<Chair>()
-                .Where(c => c.IsActive)
-                .AnyAsync(c => c.Id == armChairId);
+            return await repo.AllReadonly<ArmChair>()
+                .Where(ac => ac.IsActive)
+                .AnyAsync(ac => ac.Id == id);
         }
     }
 }

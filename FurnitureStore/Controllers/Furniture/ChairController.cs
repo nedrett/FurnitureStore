@@ -5,6 +5,7 @@ namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
     using Core.Models.Furniture.Chair;
+    using HouseRentingSystem.Core.Constants;
     using System.Security.Claims;
 
     public class ChairController : FurnitureController
@@ -25,6 +26,25 @@ namespace FurnitureStore.Controllers.Furniture
         {
             var chairItems = await chairService.GetAll();
 
+            if (chairItems == null || chairItems.Count() == 0)
+            {
+                TempData[MessageConstant.ErrorMessage] = "No Chairs are Available";
+
+                return RedirectToAction("Catalog", "Furniture");
+            }
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            foreach (var chair in chairItems)
+            {
+                if (chair.CreatorId == userId)
+                {
+                    chair.IsCreator = true;
+                }
+            }
+
+            TempData[MessageConstant.SuccessMessage] = "All Available Chairs";
+
             return View("ChairCatalog", chairItems);
         }
 
@@ -38,11 +58,19 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (await chairService.Exists(id) == false)
             {
-                return RedirectToAction(nameof(All));
+                TempData[MessageConstant.ErrorMessage] = "Chair not Available";
 
+                return RedirectToAction(nameof(All));
             }
 
             var chairModel = await chairService.ChairDetailsById(id);
+            
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (chairModel.CreatorId == userId)
+            {
+                chairModel.IsCreator = true;
+            }
 
             return View(chairModel);
         }
@@ -69,6 +97,8 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (!ModelState.IsValid)
             {
+                TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
+
                 return View(model);
             }
 
@@ -76,6 +106,8 @@ namespace FurnitureStore.Controllers.Furniture
 
             await chairService.Add(model, userId);
 
+            TempData[MessageConstant.SuccessMessage] = "Successfully added Chair";
+            
             return RedirectToAction(nameof(All));
         }
 
@@ -89,6 +121,8 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (await chairService.Exists(id) == false)
             {
+                TempData[MessageConstant.ErrorMessage] = "Chair not Available";
+
                 return RedirectToAction(nameof(All));
 
             }
@@ -119,10 +153,14 @@ namespace FurnitureStore.Controllers.Furniture
         {
             if (!ModelState.IsValid)
             {
+                TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
+
                 return View(model);
             }
 
             await chairService.Edit(model.Id, model);
+
+            TempData[MessageConstant.SuccessMessage] = "Successfully edited Chair";
 
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
@@ -147,6 +185,8 @@ namespace FurnitureStore.Controllers.Furniture
         public async Task<IActionResult> Delete([FromForm] int id)
         {
             await chairService.Delete(id);
+
+            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Chair";
 
             return RedirectToAction("All", "Chair");
         }

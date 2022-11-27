@@ -15,14 +15,9 @@
                 <button type="submit" class="btn btn-primary">Details</button>
             </form>
 
-            @if (User.Identity.IsAuthenticated)
+            @if (User.Identity.IsAuthenticated && !item.IsCreator)
             {
-                <form asp-action="Delete" asp-controller="ArmChair" asp-route-id="@item.Id">
-                    <input name="id" type="hidden" value="@item.Id" />
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-
-                <form asp-action="Delete" asp-controller="ArmChair" asp-route-id="@item.Id">
+                <form asp-action="Buy" asp-controller="ArmChair" asp-route-id="@item.Id">
                     <button type="submit" class="btn btn-primary">Buy</button>
                 </form>
             }

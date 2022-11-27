@@ -30,7 +30,8 @@
                     Id = c.Id,
                     Name = c.Name,
                     Price = c.Price,
-                    ImageUrl = c.ImageUrl
+                    ImageUrl = c.ImageUrl,
+                    CreatorId = c.CreatorId
                 }).ToListAsync();
         }
 
@@ -88,7 +89,8 @@
                     Price = c.Price,
                     Quantity = c.Quantity,
                     Description = c.Description,
-                    ImageUrl = c.ImageUrl
+                    ImageUrl = c.ImageUrl,
+                    CreatorId = c.CreatorId
                 })
                 .FirstAsync();
         }
