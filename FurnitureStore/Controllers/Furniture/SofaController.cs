@@ -7,14 +7,20 @@ namespace FurnitureStore.Controllers.Furniture
     using Core.Models.Furniture.Sofa;
     using System.Security.Claims;
     using HouseRentingSystem.Core.Constants;
+    using FurnitureStore.Core.Services;
+    using Microsoft.Extensions.Logging;
 
     public class SofaController : FurnitureController
     {
         private readonly ISofaService sofaService;
+        private readonly ILogger logger;
 
-        public SofaController(ISofaService _sofaService)
+        public SofaController(
+            ISofaService _sofaService, 
+            ILogger _logger)
         {
             sofaService = _sofaService;
+            logger = _logger;
         }
 
         /// <summary>
@@ -24,7 +30,17 @@ namespace FurnitureStore.Controllers.Furniture
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var sofaItems = await sofaService.GetAll();
+            var sofaItems;
+            try
+            {
+                sofaItems = await sofaService.GetAll();
+
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(All), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot get items";
+            }
 
             if (sofaItems == null || sofaItems.Count() == 0)
             {
@@ -106,7 +122,16 @@ namespace FurnitureStore.Controllers.Furniture
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            await sofaService.Add(model, userId);
+            try
+            {
+                await sofaService.Add(model, userId);
+            }
+            catch (Exception e)
+            {
+
+                logger.LogError(nameof(Add), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot add item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully added Sofa";
 
@@ -164,7 +189,15 @@ namespace FurnitureStore.Controllers.Furniture
                 return View(model);
             }
 
-            await sofaService.Edit(model.Id, model);
+            try
+            {
+                await sofaService.Edit(model.Id, model);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(Edit), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot edit item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully edited Sofa";
             
@@ -189,7 +222,15 @@ namespace FurnitureStore.Controllers.Furniture
         /// <returns></returns>
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            await sofaService.Delete(id);
+            try
+            {
+                await sofaService.Delete(id);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(Delete), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully deleted Sofa";
             

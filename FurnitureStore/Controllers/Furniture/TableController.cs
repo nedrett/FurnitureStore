@@ -5,16 +5,21 @@ using Microsoft.AspNetCore.Mvc;
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
+    using FurnitureStore.Core.Services;
     using HouseRentingSystem.Core.Constants;
     using System.Security.Claims;
 
     public class TableController : FurnitureController
     {
         private readonly ITableService tableService;
+        private readonly ILogger logger;
 
-        public TableController(ITableService _tableService)
+        public TableController(
+            ITableService _tableService, 
+            ILogger _logger)
         {
             tableService = _tableService;
+            logger = _logger;
         }
 
         /// <summary>
@@ -24,7 +29,17 @@ namespace FurnitureStore.Controllers.Furniture
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var tableItems = await tableService.GetAll();
+            var tableItems;
+            try
+            {
+                tableItems = await tableService.GetAll();
+
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(All), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot get items";
+            }
 
             if (tableItems == null || tableItems.Count() == 0)
             {
@@ -104,7 +119,16 @@ namespace FurnitureStore.Controllers.Furniture
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            await tableService.Add(model, userId);
+            try
+            {
+                await tableService.Add(model, userId);
+            }
+            catch (Exception e)
+            {
+
+                logger.LogError(nameof(Add), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot add item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully added Table";
 
@@ -161,7 +185,15 @@ namespace FurnitureStore.Controllers.Furniture
                 return View(model);
             }
 
-            await tableService.Edit(model.Id, model);
+            try
+            {
+                await tableService.Edit(model.Id, model);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(Edit), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot edit item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully edited Table";
             
@@ -187,7 +219,15 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            await tableService.Delete(id);
+            try
+            {
+                await tableService.Delete(id);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(Delete), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully deleted Table";
             

@@ -5,16 +5,21 @@ namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
     using Core.Models.Furniture.Chair;
+    using FurnitureStore.Core.Services;
     using HouseRentingSystem.Core.Constants;
     using System.Security.Claims;
 
     public class ChairController : FurnitureController
     {
         private readonly IChairService chairService;
+        private readonly ILogger logger;
 
-        public ChairController(IChairService _chairService)
+        public ChairController(
+            IChairService _chairService, 
+            ILogger _logger)
         {
             chairService = _chairService;
+            logger = _logger;
         }
 
         /// <summary>
@@ -24,7 +29,18 @@ namespace FurnitureStore.Controllers.Furniture
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var chairItems = await chairService.GetAll();
+            var chairItems;
+
+            try
+            {
+                chairItems = await chairService.GetAll();
+
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(All), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot get items";
+            }
 
             if (chairItems == null || chairItems.Count() == 0)
             {
@@ -104,7 +120,17 @@ namespace FurnitureStore.Controllers.Furniture
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            await chairService.Add(model, userId);
+            try
+            {
+                await chairService.Add(model, userId);
+
+            }
+            catch (Exception e)
+            {
+
+                logger.LogError(nameof(Add), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot add item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully added Chair";
             
@@ -158,7 +184,15 @@ namespace FurnitureStore.Controllers.Furniture
                 return View(model);
             }
 
-            await chairService.Edit(model.Id, model);
+            try
+            {
+                await chairService.Edit(model.Id, model);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(Edit), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot edit item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully edited Chair";
 
@@ -184,7 +218,15 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            await chairService.Delete(id);
+            try
+            {
+                await chairService.Delete(id);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(nameof(Delete), e);
+                TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
+            }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully deleted Chair";
 
