@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FurnitureStore.Infrastructure.Data
 {
+    using Configuration;
     using Models;
 
     public class ApplicationDbContext : IdentityDbContext
@@ -10,6 +11,17 @@ namespace FurnitureStore.Infrastructure.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.ApplyConfiguration(new UserConfiguration());
+            builder.ApplyConfiguration(new ArmChairConfiguration());
+            builder.ApplyConfiguration(new ChairConfiguration());
+            builder.ApplyConfiguration(new SofaConfiguration());
+            builder.ApplyConfiguration(new TableConfiguration());
+
+            base.OnModelCreating(builder);
         }
 
         public DbSet<Table> Tables { get; set; }
