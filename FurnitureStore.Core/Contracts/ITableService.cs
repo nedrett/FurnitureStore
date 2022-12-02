@@ -1,24 +1,24 @@
-﻿using FurnitureStore.Core.Models.Furniture.Table;
-
-namespace FurnitureStore.Core.Contracts
+﻿namespace FurnitureStore.Core.Contracts
 {
-    public interface ITableService
+    using Models.Furniture.TvTable;
+
+    public interface ITvTableService
     {
-        Task<IEnumerable<TableCatalogModel>> GetAll();
+        Task<IEnumerable<TvTableCatalogModel>> GetAll();
 
         /// <summary>
-        /// Add new Table item
+        /// Add new TvTable item
         /// </summary>
-        /// <param name="tableModel"></param>
+        /// <param name="tvTableModel"></param>
         /// <returns></returns>
-        Task Add(TableModel tableModel, string userId);
+        Task Add(TvTableModel tvTableModel, string userId);
 
         Task Delete(int id);
 
-        Task<TableDetailsModel> TableDetailsById(int tableId);
+        Task<TvTableDetailsModel> TvTableDetailsById(int tvTableId);
 
-        Task Edit(int tableId, TableModel model);
+        Task Edit(int tvTableId, TvTableModel model);
 
-        Task<bool> Exists(int tableId);
+        Task<bool> Exists(int TvTableId);
     }
 }

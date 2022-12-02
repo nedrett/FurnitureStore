@@ -20,6 +20,7 @@ namespace FurnitureStore.Infrastructure.Data
             builder.ApplyConfiguration(new ChairConfiguration());
             builder.ApplyConfiguration(new SofaConfiguration());
             builder.ApplyConfiguration(new TableConfiguration());
+            builder.ApplyConfiguration(new TvTableConfiguration());
 
             base.OnModelCreating(builder);
         }
@@ -31,5 +32,7 @@ namespace FurnitureStore.Infrastructure.Data
         public DbSet<Sofa> Sofas { get; set; }
 
         public DbSet<ArmChair> ArmChairs { get; set; }
+
+        public DbSet<TvTable> TvTables { get; set; }
     }
 }

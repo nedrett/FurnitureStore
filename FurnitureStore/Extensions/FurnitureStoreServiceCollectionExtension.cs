@@ -13,6 +13,7 @@ namespace FurnitureStore.Extensions
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IChairService, ChairService>();
             services.AddScoped<ISofaService, SofaService>();
+            services.AddScoped<ITvTableService, TvTableService>();
             services.AddScoped<IArmChairService, ArmChairService>();
 
             return services;

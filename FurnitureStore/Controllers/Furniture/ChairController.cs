@@ -12,11 +12,11 @@ namespace FurnitureStore.Controllers.Furniture
     public class ChairController : FurnitureController
     {
         private readonly IChairService chairService;
-        private readonly ILogger logger;
+        private readonly ILogger<ChairController> logger;
 
         public ChairController(
             IChairService _chairService, 
-            ILogger _logger)
+            ILogger<ChairController> _logger)
         {
             chairService = _chairService;
             logger = _logger;
@@ -29,7 +29,7 @@ namespace FurnitureStore.Controllers.Furniture
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var chairItems;
+            IEnumerable<ChairCatalogModel> chairItems = null;
 
             try
             {

@@ -4,35 +4,35 @@ using Microsoft.AspNetCore.Mvc;
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
-    using Core.Models.Furniture.ArmChair;
     using HouseRentingSystem.Core.Constants;
     using System.Security.Claims;
+    using Core.Models.Furniture.TvTable;
 
-    public class ArmChairController : FurnitureController
+    public class TvTableController : FurnitureController
     {
-        private readonly IArmChairService armChairService;
-        private readonly ILogger<ArmChairController> logger;
+        private readonly ITvTableService tvTableService;
+        private readonly ILogger<TvTableController> logger;
 
-        public ArmChairController(
-            IArmChairService _armChairService,
-            ILogger<ArmChairController> _logger)
+        public TvTableController(
+            ITvTableService _tvTableService, 
+            ILogger<TvTableController> _logger)
         {
-            armChairService = _armChairService;
+            tvTableService = _tvTableService;
             logger = _logger;
         }
 
         /// <summary>
-        /// Shows all Chair Items
+        /// Shows all TvTable Items
         /// </summary>
         /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            IEnumerable<ArmChairCatalogModel> armChairItems = null;
+            IEnumerable<TvTableCatalogModel> tvTableItems = null;
 
             try
             {
-                armChairItems = await armChairService.GetAll();
+                tvTableItems = await tvTableService.GetAll();
 
             }
             catch (Exception e)
@@ -41,75 +41,74 @@ namespace FurnitureStore.Controllers.Furniture
                 TempData[MessageConstant.ErrorMessage] = "Cannot get items";
             }
 
-            if (armChairItems == null || armChairItems.Count() == 0)
+            if (tvTableItems == null || tvTableItems.Count() == 0)
             {
-                TempData[MessageConstant.ErrorMessage] = "No Armchairs are Available";
+                TempData[MessageConstant.ErrorMessage] = "No Tv Tables are Available";
 
                 return RedirectToAction("Catalog", "Furniture");
             }
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            foreach (var armChair in armChairItems)
+            foreach (var tvTable in tvTableItems)
             {
-                if (armChair.CreatorId == userId)
+                if (tvTable.CreatorId == userId)
                 {
-                    armChair.IsCreator = true;
+                    tvTable.IsCreator = true;
                 }
             }
 
-            TempData[MessageConstant.SuccessMessage] = "All Available Armchairs";
+            TempData[MessageConstant.SuccessMessage] = "All Available Tables";
 
-            return View("ArmChairCatalog", armChairItems);
+            return View("TvTableCatalog", tvTableItems);
         }
 
         /// <summary>
-        /// Show Detailed View of Chair Item
+        /// Show Detailed View of TvTable Item
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="tableId"></param>
         /// <returns></returns>
         [AllowAnonymous]
         public async Task<IActionResult> Details(int id)
         {
-            if (await armChairService.Exists(id) == false)
+            if (await tvTableService.Exists(id) == false)
             {
-                TempData[MessageConstant.ErrorMessage] = "Armchair not Available";
+                TempData[MessageConstant.ErrorMessage] = "Tv Table not Available";
 
                 return RedirectToAction(nameof(All));
-
             }
 
-            var armChairModel = await armChairService.ArmChairDetailsById(id);
+            var tvTableModel = await tvTableService.TvTableDetailsById(id);
 
             var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            if (armChairModel.CreatorId == userId)
+            if (tvTableModel.CreatorId == userId)
             {
-                armChairModel.IsCreator = true;
+                tvTableModel.IsCreator = true;
             }
 
-            return View(armChairModel);
+            return View(tvTableModel);
         }
 
         /// <summary>
-        /// Get Add Chair Item View
+        /// Get Add TvTable Item View
         /// </summary>
         /// <returns></returns>
         [HttpGet]
         public IActionResult Add()
         {
-            var model = new ArmChairModel();
+            var model = new TvTableModel();
 
             return View(model);
         }
 
         /// <summary>
-        /// Adds Chair item
+        /// Adds TvTable item
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Add(ArmChairModel model)
+        public async Task<IActionResult> Add(TvTableModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -122,7 +121,7 @@ namespace FurnitureStore.Controllers.Furniture
 
             try
             {
-                await armChairService.Add(model, userId);
+                await tvTableService.Add(model, userId);
             }
             catch (Exception e)
             {
@@ -131,53 +130,53 @@ namespace FurnitureStore.Controllers.Furniture
                 TempData[MessageConstant.ErrorMessage] = "Cannot add item";
             }
 
-            TempData[MessageConstant.SuccessMessage] = "Successfully added Armchair";
+            TempData[MessageConstant.SuccessMessage] = "Successfully added Tv Table";
 
             return RedirectToAction(nameof(All));
         }
 
         /// <summary>
-        /// Get Edit Chair item
+        /// Get Edit TvTable item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            if (await armChairService.Exists(id) == false)
+            if (await tvTableService.Exists(id) == false)
             {
-                TempData[MessageConstant.ErrorMessage] = "Armchair not Available";
+                TempData[MessageConstant.ErrorMessage] = "Tv Table not Available";
 
                 return RedirectToAction(nameof(All));
+
             }
 
-            var armChair = await armChairService.ArmChairDetailsById(id);
+            var tvTable = await tvTableService.TvTableDetailsById(id);
 
-            var model = new ArmChairModel
+            var model = new TvTableModel
             {
-                Id = armChair.Id,
-                Name = armChair.Name,
-                UpholsteryType = armChair.UpholsteryType,
-                Length = armChair.Length,
-                Width = armChair.Width,
-                Height = armChair.Height,
-                Price = armChair.Price,
-                Quantity = armChair.Quantity,
-                Description = armChair.Description,
-                ImageUrl = armChair.ImageUrl
+                Id = tvTable.Id,
+                Name = tvTable.Name,
+                Width = tvTable.Width,
+                Length = tvTable.Length,
+                Height = tvTable.Height,
+                Price = tvTable.Price,
+                Quantity = tvTable.Quantity,
+                Description = tvTable.Description,
+                ImageUrl = tvTable.ImageUrl
             };
 
             return View(model);
         }
 
         /// <summary>
-        /// Edits Chair item
+        /// Edits TvTable item
         /// </summary>
         /// <param name="id"></param>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, ArmChairModel model)
+        public async Task<IActionResult> Edit(int id, TvTableModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -188,7 +187,7 @@ namespace FurnitureStore.Controllers.Furniture
 
             try
             {
-                await armChairService.Edit(model.Id, model);
+                await tvTableService.Edit(model.Id, model);
             }
             catch (Exception e)
             {
@@ -196,13 +195,13 @@ namespace FurnitureStore.Controllers.Furniture
                 TempData[MessageConstant.ErrorMessage] = "Cannot edit item";
             }
 
-            TempData[MessageConstant.SuccessMessage] = "Successfully edited Armchair";
-
+            TempData[MessageConstant.SuccessMessage] = "Successfully edited Tv Table";
+            
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
         /// <summary>
-        /// User not owner buy Chair item
+        /// User not owner buy TvTable item
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -222,7 +221,7 @@ namespace FurnitureStore.Controllers.Furniture
         {
             try
             {
-                await armChairService.Delete(id);
+                await tvTableService.Delete(id);
             }
             catch (Exception e)
             {
@@ -230,9 +229,9 @@ namespace FurnitureStore.Controllers.Furniture
                 TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
             }
 
-            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Armchair";
-
-            return RedirectToAction("All", "ArmChair");
+            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Tv Table";
+            
+            return RedirectToAction(nameof(All));
         }
     }
 }

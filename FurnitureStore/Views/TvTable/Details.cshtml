@@ -1,0 +1,52 @@
+﻿@model TvTableDetailsModel
+
+@{
+    ViewBag.Title = "Tv Table Details";
+}
+
+<h2 class="text-center">@ViewBag.Title</h2>
+<hr />
+
+<div class="container" style="display:inline">
+    <div class="row">
+        <div class="col-4">
+            <img class="card-img-top" style="width: 20rem;"
+                 src="@Model.ImageUrl" alt="House Image">
+        </div>
+        <div class="card col-8 border-0">
+            <p style="font-size:25px;"><u>@Model.Name</u></p>
+            <p>
+                Size:
+            <p><b>Length:@Model.Length m</b></p>
+            <p><b>Width:@Model.Width m</b></p>
+            <p><b>Height:@Model.Height m</b></p>
+            </p>
+            <p>
+                Price:
+                <b>@String.Format("{0:f2}", Model.Price) BGN</b>
+            </p>
+            <p>@Model.Description</p>
+            <p>Available: @Model.Quantity</p>
+            <div class="form-inline">
+                @if (this.User.Identity.IsAuthenticated)
+                {
+                    @if (Model.IsCreator)
+                    {
+                        <a class="btn btn-warning" asp-controller="TvTable" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+                        <form asp-action="Delete" asp-controller="TvTable" asp-route-id="@Model.Id">
+                            <input name="id" type="hidden" value="@Model.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="Buy" asp-controller="TvTable" asp-route-id="@Model.Id">
+                            <button type="submit" class="btn btn-primary">Buy</button>
+                        </form>
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

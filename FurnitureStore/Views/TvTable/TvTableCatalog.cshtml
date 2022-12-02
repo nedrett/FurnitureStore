@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SofaCatalogModel>
+﻿@model IEnumerable<TvTableCatalogModel>
 
 <partial name="_Catalog" />
 
@@ -8,16 +8,15 @@
         <img src=@item.ImageUrl class="card-img-top" alt="...">
         <div class="card-body">
             <h5 class="card-title">@item.Name</h5>
-            <p class="card-text">@item.UpholsteryType</p>
             <b>@String.Format("{0:f2}", item.Price) BGN</b>
 
-            <form asp-action="Details" asp-controller="Sofa" asp-route-id="@item.Id">
+            <form asp-action="Details" asp-controller="TvTable" asp-route-id="@item.Id">
                 <button type="submit" class="btn btn-primary">Details</button>
             </form>
 
             @if (User.Identity.IsAuthenticated && !item.IsCreator)
             {
-                <form asp-action="Buy" asp-controller="Sofa" asp-route-id="@item.Id">
+                <form asp-action="Buy" asp-controller="TvTable" asp-route-id="@item.Id">
                     <button type="submit" class="btn btn-primary">Buy</button>
                 </form>
             }

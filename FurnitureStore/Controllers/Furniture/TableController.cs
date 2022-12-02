@@ -5,18 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
-    using FurnitureStore.Core.Services;
     using HouseRentingSystem.Core.Constants;
     using System.Security.Claims;
 
     public class TableController : FurnitureController
     {
         private readonly ITableService tableService;
-        private readonly ILogger logger;
+        private readonly ILogger<TableController> logger;
 
         public TableController(
             ITableService _tableService, 
-            ILogger _logger)
+            ILogger<TableController> _logger)
         {
             tableService = _tableService;
             logger = _logger;
@@ -29,7 +28,8 @@ namespace FurnitureStore.Controllers.Furniture
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var tableItems;
+            IEnumerable<TableCatalogModel> tableItems = null;
+
             try
             {
                 tableItems = await tableService.GetAll();

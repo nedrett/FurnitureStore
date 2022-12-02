@@ -4,6 +4,7 @@ using FurnitureStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FurnitureStore.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221202124134_AddedTvTableDataModel")]
+    partial class AddedTvTableDataModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -376,22 +378,6 @@ namespace FurnitureStore.Infrastructure.Migrations
                     b.HasIndex("CreatorId");
 
                     b.ToTable("TvTables");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatorId = "99858a34-d71e-40c5-b550-7f78f07d5a48",
-                            Description = "Floor Type Tv Table",
-                            Height = 0.74m,
-                            ImageUrl = "https://www.ikea.com/nl/en/images/products/besta-tv-bench-with-doors-and-drawers-black-brown-lappviken-stubbarp-black-brown__0719166_pe731898_s5.jpg?f=s",
-                            IsActive = true,
-                            Length = 0.42m,
-                            Name = "Tv Bench",
-                            Price = 175m,
-                            Quantity = 1,
-                            Width = 2.4m
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -515,15 +501,15 @@ namespace FurnitureStore.Infrastructure.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cf6927c6-3f5b-4049-843d-9a4634201fe1",
+                            ConcurrencyStamp = "266a1680-23b3-4bba-bc7c-b42c440c07a5",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAED7J2WZTCUyVL2r0+SNF/ihLSxrrHxosXNDEnhkiuESVY2seYYzn+ayFnBJyqdV+Sw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOTi+0CeP68wqUbEbgC33dS71sQCLwXlQ2wdv+T4QWpEf4ylFzxrIbjfRFlGkXtYpQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7f6ab648-5eef-4bf7-9c53-c2134081c933",
+                            SecurityStamp = "1d1efbd4-7336-42fd-b0c6-d8ee52c612fa",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         },
@@ -531,15 +517,15 @@ namespace FurnitureStore.Infrastructure.Migrations
                         {
                             Id = "99858a34-d71e-40c5-b550-7f78f07d5a48",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "8a3bf63c-7c48-41fa-b6e8-d9e16b8b88c5",
+                            ConcurrencyStamp = "75fce322-5aef-4d58-bb18-cdb67259c8e1",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEGeU7fBe4BHKcdEYd6hy4XUWdY6n961wvdkTib94ix4tkSVKawQcaHLsiazVQLfm7A==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPr6l+gPf42oWNRv5kViM560aTOKgn7Qn4qv7Soc6W7ZiXFVwtaXK3oI32Yl8nR6kA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fb497c44-9871-4b1e-9388-e1940de6991c",
+                            SecurityStamp = "e34f2caa-0b1e-418c-bf44-0d2107ae0fbc",
                             TwoFactorEnabled = false,
                             UserName = "user@mail.com"
                         });

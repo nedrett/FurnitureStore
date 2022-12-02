@@ -9,8 +9,8 @@
         <div class="card-body">
             <h5 class="card-title">@item.Type</h5>
             <p class="card-text">@item.Material</p>
-            <p class="card-text">@item.Price</p>
-
+            <b>@String.Format("{0:f2}", item.Price) BGN</b>
+            
             <form asp-action="Details" asp-controller="Table" asp-route-id="@item.Id">
                 <button type="submit" class="btn btn-primary">Details</button>
             </form>

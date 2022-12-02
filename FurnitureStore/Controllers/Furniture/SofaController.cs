@@ -13,11 +13,11 @@ namespace FurnitureStore.Controllers.Furniture
     public class SofaController : FurnitureController
     {
         private readonly ISofaService sofaService;
-        private readonly ILogger logger;
+        private readonly ILogger<SofaController> logger;
 
         public SofaController(
             ISofaService _sofaService, 
-            ILogger _logger)
+            ILogger<SofaController> _logger)
         {
             sofaService = _sofaService;
             logger = _logger;
@@ -30,7 +30,8 @@ namespace FurnitureStore.Controllers.Furniture
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            var sofaItems;
+            IEnumerable<SofaCatalogModel> sofaItems = null;
+            
             try
             {
                 sofaItems = await sofaService.GetAll();
