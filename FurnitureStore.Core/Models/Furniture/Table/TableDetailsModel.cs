@@ -6,7 +6,7 @@ namespace FurnitureStore.Core.Models.Furniture.Table
     {
         public int Id { get; set; }
         
-        public string Type { get; set; } = null!;
+        public string Name { get; set; } = null!;
         
         public string Material { get; set; } = null!;
         

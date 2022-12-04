@@ -28,7 +28,7 @@
                 .Select(t => new TableCatalogModel
                 {
                     Id = t.Id,
-                    Type = t.Type,
+                    Name = t.Name,
                     Material = t.Material,
                     Price = t.Price,
                     ImageUrl = t.ImageUrl,
@@ -45,7 +45,7 @@
         {
             var tableItem = new Table
             {
-                Type = tableModel.Type,
+                Name = tableModel.Name,
                 Material = tableModel.Material,
                 Width = tableModel.Width,
                 Length = tableModel.Length,
@@ -83,7 +83,7 @@
                 .Select(t => new TableDetailsModel
                 {
                     Id = t.Id,
-                    Type = t.Type,
+                    Name = t.Name,
                     Material = t.Material,
                     Width = t.Width,
                     Length = t.Length,
@@ -100,7 +100,7 @@
         {
             var table = await repo.GetByIdAsync<Table>(tableId);
             
-            table.Type = model.Type;
+            table.Name = model.Name;
             table.Width = model.Width;
             table.Length = model.Length;
             table.Price = model.Price;

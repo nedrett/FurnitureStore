@@ -21,7 +21,7 @@ namespace FurnitureStore.Infrastructure.Data
             builder.ApplyConfiguration(new SofaConfiguration());
             builder.ApplyConfiguration(new TableConfiguration());
             builder.ApplyConfiguration(new TvTableConfiguration());
-
+            
             base.OnModelCreating(builder);
         }
 

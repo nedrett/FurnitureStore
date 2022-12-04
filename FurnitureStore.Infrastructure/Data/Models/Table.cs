@@ -12,8 +12,8 @@
         public int Id { get; set; }
 
         [Required]
-        [StringLength(TypeMaxLength, MinimumLength = TypeMinLength)]
-        public string Type { get; set; } = null!;
+        [StringLength(NameMaxLength, MinimumLength = NameMinLength)]
+        public string Name { get; set; } = null!;
 
         [Required]
         [StringLength(MaterialMaxLength, MinimumLength = MaterialMinLength)]

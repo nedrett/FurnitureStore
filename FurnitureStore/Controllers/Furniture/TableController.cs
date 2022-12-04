@@ -156,7 +156,7 @@ namespace FurnitureStore.Controllers.Furniture
             var model = new TableModel
             {
                 Id = table.Id,
-                Type = table.Type,
+                Name = table.Name,
                 Material = table.Material,
                 Width = table.Width,
                 Length = table.Length,

@@ -18,7 +18,7 @@
                 new Table
                 {
                     Id = 1,
-                    Type = "Dining Table",
+                    Name = "Dining Table",
                     Material = "Wood",
                     Width = (decimal)2.00,
                     Length = (decimal)0.75,

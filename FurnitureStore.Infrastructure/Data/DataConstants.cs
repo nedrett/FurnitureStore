@@ -13,12 +13,12 @@
             /// <summary>
             /// Min Type length
             /// </summary>
-            public const int TypeMinLength = 5;
+            public const int NameMinLength = 5;
 
             /// <summary>
             /// Max Type length
             /// </summary>
-            public const int TypeMaxLength = 50;
+            public const int NameMaxLength = 50;
 
             /// <summary>
             /// Min Material length
