@@ -49,5 +49,7 @@ namespace FurnitureStore.Core.Models.Furniture.Sofa
         [StringLength(ImageUrlMaxLength)]
         [Display(Name = "Image Url")]
         public string ImageUrl { get; set; } = null!;
+
+        public string CreatorId { get; set; } = null!;
     }
 }

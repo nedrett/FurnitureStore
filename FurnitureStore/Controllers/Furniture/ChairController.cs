@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static FurnitureStore.Areas.Admin.AdminConstants;
 
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
     using Core.Models.Furniture.Chair;
-    using FurnitureStore.Core.Services;
     using HouseRentingSystem.Core.Constants;
     using System.Security.Claims;
 
@@ -154,7 +154,9 @@ namespace FurnitureStore.Controllers.Furniture
             }
 
             var chair = await chairService.ChairDetailsById(id);
-            
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
             var model = new ChairModel
             {
                 Id = chair.Id,
@@ -162,10 +164,18 @@ namespace FurnitureStore.Controllers.Furniture
                 Price = chair.Price,
                 Quantity = chair.Quantity,
                 Description = chair.Description,
-                ImageUrl = chair.ImageUrl
+                ImageUrl = chair.ImageUrl,
+                CreatorId = chair.CreatorId
             };
 
-            return View(model);
+            if (chair.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                return View(model);
+            }
+            else
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
         }
 
         /// <summary>
@@ -207,7 +217,17 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Buy(int id)
         {
-            return RedirectToAction(nameof(All));
+            var chair = await chairService.ChairDetailsById(id);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (chair.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
+            else
+            {
+                return RedirectToAction(nameof(All));
+            }
         }
 
         /// <summary>
@@ -218,19 +238,29 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            try
-            {
-                await chairService.Delete(id);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(nameof(Delete), e);
-                TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
-            }
+            var chair = await chairService.ChairDetailsById(id);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Chair";
+            if (chair.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                try
+                {
+                    await chairService.Delete(id);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(nameof(Delete), e);
+                    TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
+                }
 
-            return RedirectToAction("All", "Chair");
+                TempData[MessageConstant.SuccessMessage] = "Successfully deleted Chair";
+
+                return RedirectToAction("All", "Chair");
+            }
+            else
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
         }
     }
 }

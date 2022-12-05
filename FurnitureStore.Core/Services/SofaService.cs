@@ -111,6 +111,7 @@
             sofa.Description = model.Description;
             sofa.ImageUrl = model.ImageUrl;
             sofa.UpholsteryType = model.UpholsteryType;
+            sofa.CreatorId = model.CreatorId;
 
             await repo.SaveChangesAsync();
         }

@@ -16,7 +16,7 @@ namespace FurnitureStore.Controllers.Furniture
         private readonly ILogger<SofaController> logger;
 
         public SofaController(
-            ISofaService _sofaService, 
+            ISofaService _sofaService,
             ILogger<SofaController> _logger)
         {
             sofaService = _sofaService;
@@ -31,7 +31,7 @@ namespace FurnitureStore.Controllers.Furniture
         public async Task<IActionResult> All()
         {
             IEnumerable<SofaCatalogModel> sofaItems = null;
-            
+
             try
             {
                 sofaItems = await sofaService.GetAll();
@@ -117,7 +117,7 @@ namespace FurnitureStore.Controllers.Furniture
             if (!ModelState.IsValid)
             {
                 TempData[MessageConstant.ErrorMessage] = "Incorrect Input";
-                
+
                 return View(model);
             }
 
@@ -145,18 +145,19 @@ namespace FurnitureStore.Controllers.Furniture
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize(Roles = $"{AdminRoleName}")]
         public async Task<IActionResult> Edit(int id)
         {
             if (await sofaService.Exists(id) == false)
             {
                 TempData[MessageConstant.ErrorMessage] = "Sofa not Available";
-                
+
                 return RedirectToAction(nameof(All));
 
             }
 
             var sofa = await sofaService.SofaDetailsById(id);
+
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
             var model = new SofaModel
             {
@@ -172,7 +173,14 @@ namespace FurnitureStore.Controllers.Furniture
                 ImageUrl = sofa.ImageUrl
             };
 
-            return View(model);
+            if (sofa.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                return View(model);
+            }
+            else
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
         }
 
         /// <summary>
@@ -182,7 +190,6 @@ namespace FurnitureStore.Controllers.Furniture
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        //[Authorize(Roles = $"{AdminRoleName}")]
         public async Task<IActionResult> Edit(int id, SofaModel model)
         {
             if (!ModelState.IsValid)
@@ -203,7 +210,7 @@ namespace FurnitureStore.Controllers.Furniture
             }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully edited Sofa";
-            
+
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
@@ -215,7 +222,17 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Buy(int id)
         {
-            return RedirectToAction(nameof(All));
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var sofa = await sofaService.SofaDetailsById(id);
+
+            if (sofa.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
+            else
+            {
+                return RedirectToAction(nameof(All));
+            }
         }
 
         /// <summary>
@@ -223,22 +240,32 @@ namespace FurnitureStore.Controllers.Furniture
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        //[Authorize(Roles = $"{AdminRoleName}")]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            try
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var sofa = await sofaService.SofaDetailsById(id);
+
+            if (sofa.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
             {
-                await sofaService.Delete(id);
+                try
+                {
+                    await sofaService.Delete(id);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(nameof(Delete), e);
+                    TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
+                }
+
+                TempData[MessageConstant.SuccessMessage] = "Successfully deleted Sofa";
+
+                return RedirectToAction(nameof(All));
             }
-            catch (Exception e)
+            else
             {
-                logger.LogError(nameof(Delete), e);
-                TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
             }
 
-            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Sofa";
-            
-            return RedirectToAction(nameof(All));
         }
     }
 }

@@ -15,7 +15,7 @@
                 <button type="submit" class="btn btn-primary">Details</button>
             </form>
 
-            @if (User.Identity.IsAuthenticated && !item.IsCreator)
+            @if (User.Identity.IsAuthenticated && !item.IsCreator && !User.IsInRole("Administrator"))
             {
                 <form asp-action="Buy" asp-controller="Table" asp-route-id="@item.Id">
                     <button type="submit" class="btn btn-primary">Buy</button>

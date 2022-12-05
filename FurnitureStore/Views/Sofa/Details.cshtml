@@ -31,7 +31,6 @@
             <div class="form-inline">
                 @if (this.User.Identity.IsAuthenticated)
                 {
-
                     @if (Model.IsCreator || User.IsInRole("Administrator"))
                     {
                         <a class="btn btn-warning" asp-controller="Sofa" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>

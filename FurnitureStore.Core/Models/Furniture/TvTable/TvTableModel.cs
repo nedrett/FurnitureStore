@@ -43,5 +43,7 @@ namespace FurnitureStore.Core.Models.Furniture.TvTable
         [StringLength(ImageUrlMaxLength)]
         [Display(Name = "Image Url")]
         public string ImageUrl { get; set; } = null!;
+
+        public string CreatorId { get; set; } = null!;
     }
 }

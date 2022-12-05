@@ -1,6 +1,8 @@
 ﻿using FurnitureStore.Core.Models.Furniture.Table;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static FurnitureStore.Areas.Admin.AdminConstants;
+
 
 namespace FurnitureStore.Controllers.Furniture
 {
@@ -14,7 +16,7 @@ namespace FurnitureStore.Controllers.Furniture
         private readonly ILogger<TableController> logger;
 
         public TableController(
-            ITableService _tableService, 
+            ITableService _tableService,
             ILogger<TableController> _logger)
         {
             tableService = _tableService;
@@ -153,6 +155,8 @@ namespace FurnitureStore.Controllers.Furniture
 
             var table = await tableService.TableDetailsById(id);
 
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
             var model = new TableModel
             {
                 Id = table.Id,
@@ -163,10 +167,18 @@ namespace FurnitureStore.Controllers.Furniture
                 Price = table.Price,
                 Quantity = table.Quantity,
                 Description = table.Description,
-                ImageUrl = table.ImageUrl
+                ImageUrl = table.ImageUrl,
+                CreatorId = table.CreatorId
             };
 
-            return View(model);
+            if (table.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                return View(model);
+            }
+            else
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
         }
 
         /// <summary>
@@ -196,7 +208,7 @@ namespace FurnitureStore.Controllers.Furniture
             }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully edited Table";
-            
+
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
@@ -208,7 +220,17 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Buy(int id)
         {
-            return RedirectToAction(nameof(All));
+            var table = await tableService.TableDetailsById(id);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (table.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
+            else
+            {
+                return RedirectToAction(nameof(All));
+            }
         }
 
         /// <summary>
@@ -219,19 +241,29 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            try
-            {
-                await tableService.Delete(id);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(nameof(Delete), e);
-                TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
-            }
+            var table = await tableService.TableDetailsById(id);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Table";
-            
-            return RedirectToAction(nameof(All));
+            if (table.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                try
+                {
+                    await tableService.Delete(id);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(nameof(Delete), e);
+                    TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
+                }
+
+                TempData[MessageConstant.SuccessMessage] = "Successfully deleted Table";
+
+                return RedirectToAction(nameof(All));
+            }
+            else
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static FurnitureStore.Areas.Admin.AdminConstants;
 
 namespace FurnitureStore.Controllers.Furniture
 {
@@ -14,7 +15,7 @@ namespace FurnitureStore.Controllers.Furniture
         private readonly ILogger<TvTableController> logger;
 
         public TvTableController(
-            ITvTableService _tvTableService, 
+            ITvTableService _tvTableService,
             ILogger<TvTableController> _logger)
         {
             tvTableService = _tvTableService;
@@ -153,6 +154,8 @@ namespace FurnitureStore.Controllers.Furniture
 
             var tvTable = await tvTableService.TvTableDetailsById(id);
 
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
             var model = new TvTableModel
             {
                 Id = tvTable.Id,
@@ -163,10 +166,18 @@ namespace FurnitureStore.Controllers.Furniture
                 Price = tvTable.Price,
                 Quantity = tvTable.Quantity,
                 Description = tvTable.Description,
-                ImageUrl = tvTable.ImageUrl
+                ImageUrl = tvTable.ImageUrl,
+                CreatorId = tvTable.CreatorId
             };
 
-            return View(model);
+            if (tvTable.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                return View(model);
+            }
+            else
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
         }
 
         /// <summary>
@@ -196,7 +207,7 @@ namespace FurnitureStore.Controllers.Furniture
             }
 
             TempData[MessageConstant.SuccessMessage] = "Successfully edited Tv Table";
-            
+
             return RedirectToAction(nameof(Details), new { id = model.Id });
         }
 
@@ -208,7 +219,17 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Buy(int id)
         {
-            return RedirectToAction(nameof(All));
+            var tvTable = await tvTableService.TvTableDetailsById(id);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+
+            if (tvTable.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
+            else
+            {
+                return RedirectToAction(nameof(All));
+            }
         }
 
         /// <summary>
@@ -219,19 +240,29 @@ namespace FurnitureStore.Controllers.Furniture
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
-            try
-            {
-                await tvTableService.Delete(id);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(nameof(Delete), e);
-                TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
-            }
+            var tvTable = await tvTableService.TvTableDetailsById(id);
+            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
 
-            TempData[MessageConstant.SuccessMessage] = "Successfully deleted Tv Table";
-            
-            return RedirectToAction(nameof(All));
+            if (tvTable.CreatorId == userId || User.IsInRole($"{AdminRoleName}"))
+            {
+                try
+                {
+                    await tvTableService.Delete(id);
+                }
+                catch (Exception e)
+                {
+                    logger.LogError(nameof(Delete), e);
+                    TempData[MessageConstant.ErrorMessage] = "Cannot delete item";
+                }
+
+                TempData[MessageConstant.SuccessMessage] = "Successfully deleted Tv Table";
+
+                return RedirectToAction(nameof(All));
+            }
+            else
+            {
+                return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
+            }
         }
     }
 }
