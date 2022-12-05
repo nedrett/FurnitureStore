@@ -31,7 +31,7 @@
             <div class="form-inline">
                 @if (this.User.Identity.IsAuthenticated)
                 {
-                    @if (Model.IsCreator)
+                    @if (Model.IsCreator || User.IsInRole("Administrator"))
                     {
                         <a class="btn btn-warning" asp-controller="ArmChair" asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
                         <form asp-action="Delete" asp-controller="ArmChair" asp-route-id="@Model.Id" onclick="return confirm('Are You sure to delete @Model.Name')">

@@ -3,7 +3,9 @@
 namespace FurnitureStore.Extensions
 {
     using Core.Contracts;
+    using Core.Contracts.User;
     using Core.Services;
+    using Core.Services.User;
 
     public static class FurnitureStoreServiceCollectionExtension
     {
@@ -15,6 +17,7 @@ namespace FurnitureStore.Extensions
             services.AddScoped<ISofaService, SofaService>();
             services.AddScoped<ITvTableService, TvTableService>();
             services.AddScoped<IArmChairService, ArmChairService>();
+            services.AddScoped<IUserService, UserService>();
 
             return services;
         }

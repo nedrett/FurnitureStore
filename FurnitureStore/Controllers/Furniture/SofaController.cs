@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static FurnitureStore.Areas.Admin.AdminConstants;
 
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
     using Core.Models.Furniture.Sofa;
-    using System.Security.Claims;
     using HouseRentingSystem.Core.Constants;
-    using FurnitureStore.Core.Services;
     using Microsoft.Extensions.Logging;
+    using System.Security.Claims;
 
     public class SofaController : FurnitureController
     {
@@ -145,6 +145,7 @@ namespace FurnitureStore.Controllers.Furniture
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet]
+        //[Authorize(Roles = $"{AdminRoleName}")]
         public async Task<IActionResult> Edit(int id)
         {
             if (await sofaService.Exists(id) == false)
@@ -181,6 +182,7 @@ namespace FurnitureStore.Controllers.Furniture
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        //[Authorize(Roles = $"{AdminRoleName}")]
         public async Task<IActionResult> Edit(int id, SofaModel model)
         {
             if (!ModelState.IsValid)
@@ -221,6 +223,7 @@ namespace FurnitureStore.Controllers.Furniture
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        //[Authorize(Roles = $"{AdminRoleName}")]
         public async Task<IActionResult> Delete([FromForm] int id)
         {
             try
