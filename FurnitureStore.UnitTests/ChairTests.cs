@@ -1,7 +1,6 @@
 ﻿namespace FurnitureStore.UnitTests
 {
     using Core.Contracts;
-    using Core.Models.Furniture.ArmChair;
     using Core.Models.Furniture.Chair;
     using Core.Services;
     using Infrastructure.Data;
@@ -14,8 +13,10 @@
     {
         private IEnumerable<Chair> Chairs;
         private ApplicationDbContext dbContext;
+        private IRepository chairRepo;
+        private IChairService chairService;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             this.Chairs = new List<Chair>()
@@ -32,21 +33,21 @@
                     IsActive = true
                 }
             };
-        }
 
-        [Test]
-        public void Test_ArmChairServiceGetAllReturnsNotNull()
-        {
             var options = new DbContextOptionsBuilder<ApplicationDbContext>()
                 .UseInMemoryDatabase(databaseName: "ChairsInMemoryDb")
                 .Options;
             this.dbContext = new ApplicationDbContext(options);
+            this.dbContext.AddRange(this.Chairs);
             this.dbContext.SaveChanges();
 
-            IRepository chairRepo = new Repository(this.dbContext);
-            IChairService chairService = new ChairService(chairRepo);
+            chairRepo = new Repository(this.dbContext);
+            chairService = new ChairService(chairRepo);
+        }
 
-
+        [Test]
+        public void Test_ChairServiceGetAllReturnsNotNull()
+        {
             var resultChairs = chairService.GetAll();
 
             Assert.True(resultChairs != null);
@@ -54,17 +55,8 @@
         }
         
         [Test]
-        public void Test_ArmChairServiceAddArmChairAddsCorrectProduct()
+        public void Test_ChairServiceAddChairAddsCorrectProduct()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository chairRepo = new Repository(this.dbContext);
-            IChairService chairService = new ChairService(chairRepo);
-
             var chairToAdd = new ChairModel()
             {
                 Id = 2,
@@ -83,21 +75,12 @@
             var resultChairs = chairService.GetAll();
 
             Assert.True(resultChairs != null);
-            Assert.True(resultChairs.Result.Count() == 1);
+            Assert.True(resultChairs.Result.Count() == 2);
         }
 
         [Test]
-        public void Test_ArmChairServiceDeleteChangesIsActiveFlagToFalse()
+        public void Test_ChairServiceDeleteChangesIsActiveFlagToFalse()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository chairRepo = new Repository(this.dbContext);
-            IChairService chairService = new ChairService(chairRepo);
-
             var chairId = 2;
 
             var chair = chairRepo.GetByIdAsync<Chair>(chairId);
@@ -108,17 +91,8 @@
         }
 
         [Test]
-        public void Test_ArmChairServiceArmChairDetailsByIdReturnsNotNull()
+        public void Test_ChairServiceChairDetailsByIdReturnsNotNull()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository chairRepo = new Repository(this.dbContext);
-            IChairService chairService = new ChairService(chairRepo);
-
             var chairId = 1;
 
             var result = chairService.ChairDetailsById(chairId);
@@ -127,42 +101,23 @@
         }
 
         [Test]
-        public void Test_ArmChairServiceArmChairDetailsByIdReturnsCorrectProduct()
+        public void Test_ChairServiceChairDetailsByIdReturnsCorrectProduct()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.AddRange(this.Chairs);
-            this.dbContext.SaveChanges();
-
-            IRepository chairRepo = new Repository(this.dbContext);
-            IChairService chairService = new ChairService(chairRepo);
-
             var chairId = 1;
 
             var result = chairService.ChairDetailsById(chairId);
 
-            var dbArmChair = Chairs.FirstOrDefault(ac => ac.Id == chairId);
+            var dbChair = Chairs.FirstOrDefault(c => c.Id == chairId);
 
-            Assert.True(result.Result.Id == dbArmChair.Id);
-            Assert.True(result.Result.Name == dbArmChair.Name);
-            Assert.True(result.Result.Price == dbArmChair.Price);
-            Assert.True(result.Result.Description == dbArmChair.Description);
+            Assert.True(result.Result.Id == dbChair.Id);
+            Assert.True(result.Result.Name == dbChair.Name);
+            Assert.True(result.Result.Price == dbChair.Price);
+            Assert.True(result.Result.Description == dbChair.Description);
         }
 
         [Test]
-        public void Test_ArmChairServiceEditMakesCorrectChanges()
+        public void Test_ChairServiceEditMakesCorrectChanges()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository chairRepo = new Repository(this.dbContext);
-            IChairService chairService = new ChairService(chairRepo);
-
             var chairId = 2;
 
             var editedChairName = "Test Chair - Edited";
@@ -180,28 +135,19 @@
 
             chairService.Edit(chairId, armChairToEdit);
 
-            var dbArmChair = chairRepo.GetByIdAsync<Chair>(chairId);
+            var dbChair = chairRepo.GetByIdAsync<Chair>(chairId);
 
-            Assert.True(dbArmChair.Result.Name == editedChairName);
+            Assert.True(dbChair.Result.Name == editedChairName);
         }
 
         [Test]
-        public void Test_ArmChairServiceExistReturnsCorrectResult()
+        public void Test_ChairServiceExistReturnsCorrectResult()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository chairRepo = new Repository(this.dbContext);
-            IChairService chairService = new ChairService(chairRepo);
-
             var existingChairId = 1;
-            var notExistingChair = 10;
+            var notExistingChairId = 10;
 
             var trueResult = chairService.Exists(existingChairId).Result;
-            var falseResult = chairService.Exists(notExistingChair).Result;
+            var falseResult = chairService.Exists(notExistingChairId).Result;
 
 
             Assert.True(trueResult);

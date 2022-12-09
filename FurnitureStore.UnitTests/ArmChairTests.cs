@@ -13,8 +13,10 @@
     {
         private IEnumerable<ArmChair> armChairs;
         private ApplicationDbContext dbContext;
+        private IRepository armChairRepo;
+        private IArmChairService armChairService;
 
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             this.armChairs = new List<ArmChair>()
@@ -35,21 +37,21 @@
                     IsActive = true
                 }
             };
+
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+                .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
+                .Options;
+            this.dbContext = new ApplicationDbContext(options);
+            this.dbContext.AddRange(this.armChairs);
+            this.dbContext.SaveChanges();
+
+            armChairRepo = new Repository(this.dbContext);
+            armChairService = new ArmChairService(armChairRepo);
         }
 
         [Test]
         public void Test_ArmChairServiceGetAllReturnsNotNull()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository armChairRepo = new Repository(this.dbContext);
-            IArmChairService armChairService = new ArmChairService(armChairRepo);
-
-
             var resultArmChairs = armChairService.GetAll();
             
             Assert.True(resultArmChairs != null);
@@ -59,15 +61,6 @@
         [Test]
         public void Test_ArmChairServiceAddArmChairAddsCorrectProduct()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository armChairRepo = new Repository(this.dbContext);
-            IArmChairService armChairService = new ArmChairService(armChairRepo);
-
             var armChairToAdd = new ArmChairModel()
             {
                 Id = 2,
@@ -90,21 +83,12 @@
             var resultArmChairs = armChairService.GetAll();
 
             Assert.True(resultArmChairs != null);
-            Assert.True(resultArmChairs.Result.Count() == 1);
+            Assert.True(resultArmChairs.Result.Count() == 2);
         }
 
         [Test]
         public void Test_ArmChairServiceDeleteChangesIsActiveFlagToFalse()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository armChairRepo = new Repository(this.dbContext);
-            IArmChairService armChairService = new ArmChairService(armChairRepo);
-
             var armChairId = 2;
 
             var armChair = armChairRepo.GetByIdAsync<ArmChair>(armChairId);
@@ -117,15 +101,6 @@
         [Test]
         public void Test_ArmChairServiceArmChairDetailsByIdReturnsNotNull()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository armChairRepo = new Repository(this.dbContext);
-            IArmChairService armChairService = new ArmChairService(armChairRepo);
-
             var armChairId = 1;
 
             var result = armChairService.ArmChairDetailsById(armChairId);
@@ -136,16 +111,6 @@
         [Test]
         public void Test_ArmChairServiceArmChairDetailsByIdReturnsCorrectProduct()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.AddRange(this.armChairs);
-            this.dbContext.SaveChanges();
-
-            IRepository armChairRepo = new Repository(this.dbContext);
-            IArmChairService armChairService = new ArmChairService(armChairRepo);
-
             var armChairId = 1;
 
             var result = armChairService.ArmChairDetailsById(armChairId);
@@ -164,15 +129,6 @@
         [Test]
         public void Test_ArmChairServiceEditMakesCorrectChanges()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository armChairRepo = new Repository(this.dbContext);
-            IArmChairService armChairService = new ArmChairService(armChairRepo);
-
             var armChairId = 2;
 
             var editedArmChairName = "Test Armchair - Edited";
@@ -202,20 +158,11 @@
         [Test]
         public void Test_ArmChairServiceExistReturnsCorrectResult()
         {
-            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
-                .Options;
-            this.dbContext = new ApplicationDbContext(options);
-            this.dbContext.SaveChanges();
-
-            IRepository armChairRepo = new Repository(this.dbContext);
-            IArmChairService armChairService = new ArmChairService(armChairRepo);
-
             var existingArmChairId = 1;
-            var notExistingArmChair = 10;
+            var notExistingArmChairId = 10;
 
             var trueResult = armChairService.Exists(existingArmChairId).Result;
-            var falseResult = armChairService.Exists(notExistingArmChair).Result;
+            var falseResult = armChairService.Exists(notExistingArmChairId).Result;
             
 
             Assert.True(trueResult);
