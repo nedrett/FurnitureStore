@@ -119,6 +119,7 @@
 
             Assert.True(result.Result.Id == dbSofa.Id);
             Assert.True(result.Result.Name == dbSofa.Name);
+            Assert.True(result.Result.UpholsteryType == dbSofa.UpholsteryType);
             Assert.True(result.Result.Price == dbSofa.Price);
             Assert.True(result.Result.Description == dbSofa.Description);
         }
