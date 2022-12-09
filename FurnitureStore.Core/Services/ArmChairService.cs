@@ -39,7 +39,7 @@
         /// <summary>
         /// Add new Table item
         /// </summary>
-        /// <param name="chairModel"></param>
+        /// <param name="armChairModel"></param>
         /// <returns></returns>
         public async Task Add(ArmChairModel armChairModel, string userId)
         {
@@ -80,7 +80,7 @@
         /// <summary>
         /// Gets Chair Item for Details page
         /// </summary>
-        /// <param name="chairId"></param>
+        /// <param name="armChairId"></param>
         /// <returns></returns>
         public async Task<ArmChairDetailsModel> ArmChairDetailsById(int armChairId)
         {
