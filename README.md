@@ -17,3 +17,6 @@ App is a web shop for Day room furnitures and has 5 entity models - Sofa, Armcha
 -Delete Item: changes IsActive flag in Database to false and removes the item from the View;
 -Create Item Page: Every registered user can create items;
 -Implemented Admin Area, where admins can have access to List with all users. Admin can Delete/Forget User which sets username, email and password to null. Admin can View, Edit and Delete products;
+
+# Unit Tests
+Unit Testing is implemented for all of the Services used in this App. Code coverage of the Services is 100%.
