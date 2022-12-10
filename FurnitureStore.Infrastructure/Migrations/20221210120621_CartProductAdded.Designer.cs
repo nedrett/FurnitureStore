@@ -4,6 +4,7 @@ using FurnitureStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FurnitureStore.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221210120621_CartProductAdded")]
+    partial class CartProductAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -162,39 +164,6 @@ namespace FurnitureStore.Infrastructure.Migrations
                             Price = 50m,
                             Quantity = 4
                         });
-                });
-
-            modelBuilder.Entity("FurnitureStore.Infrastructure.Data.Models.Product", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("BuyerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("money");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BuyerId");
-
-                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("FurnitureStore.Infrastructure.Data.Models.Sofa", b =>
@@ -548,15 +517,15 @@ namespace FurnitureStore.Infrastructure.Migrations
                         {
                             Id = "dea12856-c198-4129-b3f3-b893d8395082",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e8bb923e-291c-467c-993f-1126f5fc1502",
+                            ConcurrencyStamp = "b22c1eeb-19e2-4ec5-b7fd-d6d935c0c54e",
                             Email = "admin@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MAIL.COM",
                             NormalizedUserName = "ADMIN@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEP9WXio0IWzp0otWq68ZO4VR0tfLr+o7e0lEv7cEMR1m81+1P4rzPjzUEgSSSi2ErQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAED2Xlwa0oAhtadC3WmRNjBpMud5CCpTtCwDdlAvjwsWF65Yc8C50FNOK8BUWkTR1ow==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "3a58aec6-ac6c-4e33-8d9b-4f0c813aae84",
+                            SecurityStamp = "5f4b26ad-3882-4725-84ee-971a2a6c7bc7",
                             TwoFactorEnabled = false,
                             UserName = "admin@mail.com"
                         },
@@ -564,15 +533,15 @@ namespace FurnitureStore.Infrastructure.Migrations
                         {
                             Id = "99858a34-d71e-40c5-b550-7f78f07d5a48",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "651a4da2-ab6f-4f8d-955b-fd899b892675",
+                            ConcurrencyStamp = "3b9c2e9b-5455-4e58-9ab9-f0aacfed0ba6",
                             Email = "user@mail.com",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MAIL.COM",
                             NormalizedUserName = "USER@MAIL.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEE6EOm3imkLKFGH9W0Kd9aEfEIrA6c7/1dxxh+Jouz4cyY9Hd5AJgen0JhUS4rrgIw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEL4bzYD2RgRqJM1eJYmqc/+qir32PQRlb5yPGhCDxTU2ABKFdxY9nbNQjlvIfjyY2A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "5851196d-412d-473f-b5e3-7cca12c8accf",
+                            SecurityStamp = "c691975e-bb85-461e-b280-82728a4a950c",
                             TwoFactorEnabled = false,
                             UserName = "user@mail.com"
                         });
@@ -695,15 +664,6 @@ namespace FurnitureStore.Infrastructure.Migrations
                     b.Navigation("Buyer");
 
                     b.Navigation("Creator");
-                });
-
-            modelBuilder.Entity("FurnitureStore.Infrastructure.Data.Models.Product", b =>
-                {
-                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "Buyer")
-                        .WithMany()
-                        .HasForeignKey("BuyerId");
-
-                    b.Navigation("Buyer");
                 });
 
             modelBuilder.Entity("FurnitureStore.Infrastructure.Data.Models.Sofa", b =>

@@ -13,7 +13,7 @@
 
         [Required]
         [StringLength(NameMaxLength, MinimumLength = NameMinLength)]
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         [Required]
         [StringLength(UpholsteryTypeMaxLength, MinimumLength = UpholsteryTypeMinLength)]

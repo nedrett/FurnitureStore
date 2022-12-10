@@ -18,7 +18,7 @@
             @if (User.Identity.IsAuthenticated && !item.IsCreator && !User.IsInRole("Administrator"))
             {
                 <form asp-action="Buy" asp-controller="ArmChair" asp-route-id="@item.Id">
-                    <button type="submit" class="btn btn-primary">Buy</button>
+                    <button type="submit" class="btn btn-primary">Add to Cart</button>
                 </form>
             }
         </div>

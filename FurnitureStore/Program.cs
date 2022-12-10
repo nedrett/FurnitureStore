@@ -21,6 +21,16 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+//options =>
+//{
+//    options.IdleTimeout = TimeSpan.FromSeconds(10);
+
+//    options.Cookie.HttpOnly = true;
+//});
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddApplicationServices();
 
@@ -35,6 +45,8 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+app.UseSession();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

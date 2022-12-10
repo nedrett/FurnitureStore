@@ -7,8 +7,11 @@ namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
     using Core.Models.Furniture.ArmChair;
-    using HouseRentingSystem.Core.Constants;
+    using Core.Constants;
+    using Extensions;
     using System.Security.Claims;
+    using Core.Models.Furniture;
+    using FurnitureStore.Infrastructure.Data.Models;
 
     public class ArmChairController : FurnitureController
     {
@@ -30,7 +33,7 @@ namespace FurnitureStore.Controllers.Furniture
         [AllowAnonymous]
         public async Task<IActionResult> All()
         {
-            IEnumerable<ArmChairCatalogModel> armChairItems = null;
+            IEnumerable<ArmChairCatalogModel> armChairItems = null!;
 
             try
             {
@@ -218,7 +221,7 @@ namespace FurnitureStore.Controllers.Furniture
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost]
+        //[HttpPost]
         public async Task<IActionResult> Buy(int id)
         {
             var armChair = await armChairService.ArmChairDetailsById(id);
@@ -230,8 +233,56 @@ namespace FurnitureStore.Controllers.Furniture
             }
             else
             {
+                ProductViewModel product = new ProductViewModel();
+                product.Id = armChair.Id;
+                product.Name = armChair.Name;
+                product.ImageUrl = armChair.ImageUrl;
+                product.Price = armChair.Price;
+
+                if (SessionExtensions.Get<List<Product>>(HttpContext.Session, "cart") == null)
+                {
+                    List<Product> cart = new List<Product>();
+                    cart.Add(new Product
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        ImageUrl = product.ImageUrl,
+                        Price = product.Price,
+                        Quantity = 1
+                    });
+                    SessionExtensions.Set(HttpContext.Session, "cart", cart);
+                }
+                else
+                {
+                    List<Product> cart = SessionExtensions.Get<List<Product>>(HttpContext.Session, "cart");
+                    bool productExist = isExist(product.Name);
+                    if (productExist)
+                    {
+                        cart.First(p => p.Name == product.Name).Quantity++;
+                        foreach (var item in cart)
+                        {
+                            if (item.Name == product.Name)
+                            {
+                                item.Quantity++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        cart.Add(new Product
+                        {
+                            Id = product.Id,
+                            Name = product.Name,
+                            ImageUrl = product.ImageUrl,
+                            Price = product.Price,
+                            Quantity = 1
+                        });
+                        SessionExtensions.Set(HttpContext.Session, "cart", cart);
+                    }
+                }
                 return RedirectToAction(nameof(All));
             }
+
         }
 
         /// <summary>
@@ -265,6 +316,19 @@ namespace FurnitureStore.Controllers.Furniture
             {
                 return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
             }
+        }
+
+        private bool isExist(string name)
+        {
+            List<Product> cart = SessionExtensions.Get<List<Product>>(HttpContext.Session, "cart");
+            for (int i = 0; i < cart.Count; i++)
+            {
+                if (cart[i].Name.Equals(name))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

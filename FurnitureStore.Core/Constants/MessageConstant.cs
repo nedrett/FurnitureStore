@@ -1,4 +1,4 @@
-﻿namespace HouseRentingSystem.Core.Constants
+﻿namespace FurnitureStore.Core.Constants
 {
     public static class MessageConstant
     {

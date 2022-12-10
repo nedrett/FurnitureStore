@@ -7,8 +7,11 @@ using static FurnitureStore.Areas.Admin.AdminConstants;
 namespace FurnitureStore.Controllers.Furniture
 {
     using Core.Contracts;
-    using HouseRentingSystem.Core.Constants;
+    using Extensions;
+    using Core.Constants;
     using System.Security.Claims;
+    using FurnitureStore.Core.Models.Furniture;
+    using FurnitureStore.Infrastructure.Data.Models;
 
     public class TableController : FurnitureController
     {
@@ -229,6 +232,53 @@ namespace FurnitureStore.Controllers.Furniture
             }
             else
             {
+                ProductViewModel product = new ProductViewModel();
+                product.Id = table.Id;
+                product.Name = table.Name;
+                product.ImageUrl = table.ImageUrl;
+                product.Price = table.Price;
+
+                if (SessionExtensions.Get<List<Product>>(HttpContext.Session, "cart") == null)
+                {
+                    List<Product> cart = new List<Product>();
+                    cart.Add(new Product
+                    {
+                        Id = product.Id,
+                        Name = product.Name,
+                        ImageUrl = product.ImageUrl,
+                        Price = product.Price,
+                        Quantity = 1
+                    });
+                    SessionExtensions.Set(HttpContext.Session, "cart", cart);
+                }
+                else
+                {
+                    List<Product> cart = SessionExtensions.Get<List<Product>>(HttpContext.Session, "cart");
+                    bool productExist = isExist(product.Name);
+                    if (productExist)
+                    {
+                        cart.First(p => p.Name == product.Name).Quantity++;
+                        foreach (var item in cart)
+                        {
+                            if (item.Name == product.Name)
+                            {
+                                item.Quantity++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        cart.Add(new Product
+                        {
+                            Id = product.Id,
+                            Name = product.Name,
+                            ImageUrl = product.ImageUrl,
+                            Price = product.Price,
+                            Quantity = 1
+                        });
+                        SessionExtensions.Set(HttpContext.Session, "cart", cart);
+                    }
+                }
                 return RedirectToAction(nameof(All));
             }
         }
@@ -264,6 +314,19 @@ namespace FurnitureStore.Controllers.Furniture
             {
                 return RedirectToPage("/Account/AccessDenied", new { area = "Identity" });
             }
+        }
+
+        private bool isExist(string name)
+        {
+            List<Product> cart = SessionExtensions.Get<List<Product>>(HttpContext.Session, "cart");
+            for (int i = 0; i < cart.Count; i++)
+            {
+                if (cart[i].Name.Equals(name))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
