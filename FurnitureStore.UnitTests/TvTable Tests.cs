@@ -16,15 +16,15 @@
         private IRepository tvTableRepo;
         private ITvTableService tvTableService;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup()
         {
             this.TvTables = new List<TvTable>()
             {
                 new TvTable
                 {
-                    Id = 1,
-                    Name = "Tv Bench",
+                    Id = 2,
+                    Name = "Test Tv Bench",
                     Width = (decimal)2.40,
                     Length = (decimal)0.42,
                     Height = (decimal)0.74,
@@ -41,6 +41,10 @@
                 .UseInMemoryDatabase(databaseName: "TvTablesInMemoryDb")
                 .Options;
             this.dbContext = new ApplicationDbContext(options);
+
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
             this.dbContext.AddRange(this.TvTables);
             this.dbContext.SaveChanges();
 
@@ -54,7 +58,7 @@
             var resultTable = tvTableService.GetAll();
 
             Assert.True(resultTable != null);
-            Assert.True(resultTable.Result.Count() == 1);
+            Assert.True(resultTable.Result.Count() == 2);
         }
         
         [Test]
@@ -62,7 +66,7 @@
         {
             var tvTableToAdd = new TvTableModel()
             {
-                Id = 2,
+                Id = 3,
                 Name = "Test Tv Bench",
                 Width = (decimal)0.01,
                 Length = (decimal)0.02,
@@ -81,7 +85,7 @@
             var resultTvTables = tvTableService.GetAll();
 
             Assert.True(resultTvTables != null);
-            Assert.True(resultTvTables.Result.Count() == 2);
+            Assert.True(resultTvTables.Result.Count() == 3);
         }
 
         [Test]
@@ -99,7 +103,7 @@
         [Test]
         public void Test_TvTableServiceTvTableDetailsByIdReturnsNotNull()
         {
-            var tvTableId = 1;
+            var tvTableId = 2;
 
             var result = tvTableService.TvTableDetailsById(tvTableId);
 
@@ -109,7 +113,7 @@
         [Test]
         public void Test_TvTableServiceTvTableDetailsByIdReturnsCorrectProduct()
         {
-            var tvTableId = 1;
+            var tvTableId = 2;
 
             var result = tvTableService.TvTableDetailsById(tvTableId);
 
@@ -161,6 +165,12 @@
 
             Assert.True(trueResult);
             Assert.True(falseResult == false);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            dbContext.Dispose();
         }
     }
 }

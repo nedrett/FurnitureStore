@@ -16,15 +16,15 @@
         private IRepository sofaRepo;
         private ISofaService sofaService;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup()
         {
             this.Sofas = new List<Sofa>()
             {
                 new Sofa
                 {
-                    Id = 1,
-                    Name = "Classic Sofa",
+                    Id = 2,
+                    Name = "Test Classic Sofa",
                     UpholsteryType = "Leather",
                     Width = (decimal)3.00,
                     Length = (decimal)1.20,
@@ -42,6 +42,10 @@
                 .UseInMemoryDatabase(databaseName: "SofasInMemoryDb")
                 .Options;
             this.dbContext = new ApplicationDbContext(options);
+            
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
             this.dbContext.AddRange(this.Sofas);
             this.dbContext.SaveChanges();
 
@@ -55,7 +59,7 @@
             var resultSofas = sofaService.GetAll();
 
             Assert.True(resultSofas != null);
-            Assert.True(resultSofas.Result.Count() == 1);
+            Assert.True(resultSofas.Result.Count() == 2);
         }
         
         [Test]
@@ -63,7 +67,7 @@
         {
             var sofaToAdd = new SofaModel()
             {
-                Id = 2,
+                Id = 3,
                 Name = "Test Sofa",
                 UpholsteryType = "Fiber",
                 Width = (decimal)0.02,
@@ -83,7 +87,7 @@
             var resultSofas = sofaService.GetAll();
 
             Assert.True(resultSofas != null);
-            Assert.True(resultSofas.Result.Count() == 2);
+            Assert.True(resultSofas.Result.Count() == 3);
         }
 
         [Test]
@@ -101,7 +105,7 @@
         [Test]
         public void Test_SofaServiceSofaDetailsByIdReturnsNotNull()
         {
-            var sofaId = 1;
+            var sofaId = 2;
 
             var result = sofaService.SofaDetailsById(sofaId);
 
@@ -111,7 +115,7 @@
         [Test]
         public void Test_SofaServiceSofaDetailsByIdReturnsCorrectProduct()
         {
-            var sofaId = 1;
+            var sofaId = 2;
 
             var result = sofaService.SofaDetailsById(sofaId);
 
@@ -156,7 +160,7 @@
         [Test]
         public void Test_SofaServiceExistReturnsCorrectResult()
         {
-            var existingSofaId = 1;
+            var existingSofaId = 2;
             var notExistingSofaId= 10;
 
             var trueResult = sofaService.Exists(existingSofaId).Result;
@@ -165,6 +169,12 @@
 
             Assert.True(trueResult);
             Assert.True(falseResult == false);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            dbContext.Dispose();
         }
     }
 }

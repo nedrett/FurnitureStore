@@ -16,15 +16,15 @@
         private IRepository tableRepo;
         private ITableService tableService;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup()
         {
             this.Tables = new List<Table>()
             {
                 new Table
                 {
-                    Id = 1,
-                    Name = "Dining Table",
+                    Id = 2,
+                    Name = "Test Dining Table",
                     Material = "Wood",
                     Width = (decimal)2.00,
                     Length = (decimal)0.75,
@@ -41,6 +41,10 @@
                 .UseInMemoryDatabase(databaseName: "TablesInMemoryDb")
                 .Options;
             this.dbContext = new ApplicationDbContext(options);
+
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
             this.dbContext.AddRange(this.Tables);
             this.dbContext.SaveChanges();
 
@@ -54,7 +58,7 @@
             var resultTable = tableService.GetAll();
 
             Assert.True(resultTable != null);
-            Assert.True(resultTable.Result.Count() == 1);
+            Assert.True(resultTable.Result.Count() == 2);
         }
         
         [Test]
@@ -62,7 +66,7 @@
         {
             var tableToAdd = new TableModel()
             {
-                Id = 2,
+                Id = 3,
                 Name = "Test Table",
                 Material = "Wood",
                 Width = (decimal)0.01,
@@ -81,7 +85,7 @@
             var resultTables = tableService.GetAll();
 
             Assert.True(resultTables != null);
-            Assert.True(resultTables.Result.Count() == 2);
+            Assert.True(resultTables.Result.Count() == 3);
         }
 
         [Test]
@@ -99,7 +103,7 @@
         [Test]
         public void Test_TableServiceTableDetailsByIdReturnsNotNull()
         {
-            var tableId = 1;
+            var tableId = 2;
 
             var result = tableService.TableDetailsById(tableId);
 
@@ -109,7 +113,7 @@
         [Test]
         public void Test_TableServiceTableDetailsByIdReturnsCorrectProduct()
         {
-            var tableId = 1;
+            var tableId = 2;
 
             var result = tableService.TableDetailsById(tableId);
 
@@ -153,7 +157,7 @@
         [Test]
         public void Test_TableServiceExistReturnsCorrectResult()
         {
-            var existingTableId = 1;
+            var existingTableId = 2;
             var notExistingTableId = 10;
 
             var trueResult = tableService.Exists(existingTableId).Result;
@@ -162,6 +166,12 @@
 
             Assert.True(trueResult);
             Assert.True(falseResult == false);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            dbContext.Dispose();
         }
     }
 }

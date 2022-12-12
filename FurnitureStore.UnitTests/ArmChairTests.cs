@@ -16,15 +16,15 @@
         private IRepository armChairRepo;
         private IArmChairService armChairService;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup()
         {
             this.armChairs = new List<ArmChair>()
             {
                 new ArmChair
                 {
-                    Id = 1,
-                    Name = "Roll arm Armchair",
+                    Id = 2,
+                    Name = "Test Roll arm Armchair",
                     UpholsteryType = "Fiber",
                     Width = (decimal)1.00,
                     Length = (decimal)1.00,
@@ -42,6 +42,10 @@
                 .UseInMemoryDatabase(databaseName: "ArmChairsInMemoryDb")
                 .Options;
             this.dbContext = new ApplicationDbContext(options);
+
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
             this.dbContext.AddRange(this.armChairs);
             this.dbContext.SaveChanges();
 
@@ -55,7 +59,7 @@
             var resultArmChairs = armChairService.GetAll();
             
             Assert.True(resultArmChairs != null);
-            Assert.True(resultArmChairs.Result.Count() == 1);
+            Assert.True(resultArmChairs.Result.Count() == 2);
         }
 
         [Test]
@@ -63,7 +67,7 @@
         {
             var armChairToAdd = new ArmChairModel()
             {
-                Id = 2,
+                Id = 3,
                 Name = "Test Armchair",
                 UpholsteryType = "Leather",
                 Width = (decimal)0.01,
@@ -83,7 +87,7 @@
             var resultArmChairs = armChairService.GetAll();
 
             Assert.True(resultArmChairs != null);
-            Assert.True(resultArmChairs.Result.Count() == 2);
+            Assert.True(resultArmChairs.Result.Count() == 3);
         }
 
         [Test]
@@ -101,7 +105,7 @@
         [Test]
         public void Test_ArmChairServiceArmChairDetailsByIdReturnsNotNull()
         {
-            var armChairId = 1;
+            var armChairId = 2;
 
             var result = armChairService.ArmChairDetailsById(armChairId);
             
@@ -111,7 +115,7 @@
         [Test]
         public void Test_ArmChairServiceArmChairDetailsByIdReturnsCorrectProduct()
         {
-            var armChairId = 1;
+            var armChairId = 2;
 
             var result = armChairService.ArmChairDetailsById(armChairId);
 
@@ -158,7 +162,7 @@
         [Test]
         public void Test_ArmChairServiceExistReturnsCorrectResult()
         {
-            var existingArmChairId = 1;
+            var existingArmChairId = 2;
             var notExistingArmChairId = 10;
 
             var trueResult = armChairService.Exists(existingArmChairId).Result;
@@ -167,6 +171,12 @@
 
             Assert.True(trueResult);
             Assert.True(falseResult == false);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            dbContext.Dispose();
         }
     }
 }

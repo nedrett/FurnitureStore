@@ -16,15 +16,15 @@
         private IRepository chairRepo;
         private IChairService chairService;
 
-        [OneTimeSetUp]
+        [SetUp]
         public void Setup()
         {
             this.Chairs = new List<Chair>()
             {
                 new Chair()
                 {
-                    Id = 1,
-                    Name = "Dining Chair",
+                    Id = 2,
+                    Name = "Test Dining Chair",
                     Price = (decimal)50.00,
                     Quantity = 4,
                     Description = "Best dining chair",
@@ -38,6 +38,10 @@
                 .UseInMemoryDatabase(databaseName: "ChairsInMemoryDb")
                 .Options;
             this.dbContext = new ApplicationDbContext(options);
+
+            dbContext.Database.EnsureDeleted();
+            dbContext.Database.EnsureCreated();
+
             this.dbContext.AddRange(this.Chairs);
             this.dbContext.SaveChanges();
 
@@ -51,7 +55,7 @@
             var resultChairs = chairService.GetAll();
 
             Assert.True(resultChairs != null);
-            Assert.True(resultChairs.Result.Count() == 1);
+            Assert.True(resultChairs.Result.Count() == 2);
         }
         
         [Test]
@@ -59,7 +63,7 @@
         {
             var chairToAdd = new ChairModel()
             {
-                Id = 2,
+                Id = 3,
                 Name = "Test Chair",
                 Price = (decimal)20.00,
                 Quantity = 4,
@@ -75,7 +79,7 @@
             var resultChairs = chairService.GetAll();
 
             Assert.True(resultChairs != null);
-            Assert.True(resultChairs.Result.Count() == 2);
+            Assert.True(resultChairs.Result.Count() == 3);
         }
 
         [Test]
@@ -93,7 +97,7 @@
         [Test]
         public void Test_ChairServiceChairDetailsByIdReturnsNotNull()
         {
-            var chairId = 1;
+            var chairId = 2;
 
             var result = chairService.ChairDetailsById(chairId);
 
@@ -103,7 +107,7 @@
         [Test]
         public void Test_ChairServiceChairDetailsByIdReturnsCorrectProduct()
         {
-            var chairId = 1;
+            var chairId = 2;
 
             var result = chairService.ChairDetailsById(chairId);
 
@@ -143,7 +147,7 @@
         [Test]
         public void Test_ChairServiceExistReturnsCorrectResult()
         {
-            var existingChairId = 1;
+            var existingChairId = 2;
             var notExistingChairId = 10;
 
             var trueResult = chairService.Exists(existingChairId).Result;
@@ -152,6 +156,12 @@
 
             Assert.True(trueResult);
             Assert.True(falseResult == false);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            dbContext.Dispose();
         }
     }
 }
