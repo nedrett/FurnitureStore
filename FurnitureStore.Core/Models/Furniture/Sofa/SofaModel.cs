@@ -50,6 +50,6 @@ namespace FurnitureStore.Core.Models.Furniture.Sofa
         [Display(Name = "Image Url")]
         public string ImageUrl { get; set; } = null!;
 
-        public string CreatorId { get; set; } = null!;
+        public string? CreatorId { get; set; }
     }
 }

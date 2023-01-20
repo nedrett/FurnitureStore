@@ -102,7 +102,7 @@ namespace FurnitureStore.Controllers.Furniture
         public IActionResult Add()
         {
             var model = new ChairModel();
-
+            
             return View(model);
         }
 

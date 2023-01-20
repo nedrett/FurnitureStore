@@ -51,6 +51,6 @@ namespace FurnitureStore.Core.Models.Furniture.ArmChair
         [Display(Name = "Image Url")]
         public string ImageUrl { get; set; } = null!;
 
-        public string CreatorId { get; set; } = null!;
+        public string? CreatorId { get; set; }
     }
 }
